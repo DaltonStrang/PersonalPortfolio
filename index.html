@@ -34,7 +34,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
  }
 }
 
-/* ── CUSTOM REFINED CURSOR ── */
+/* ── REFINED CURSOR ── */
 #cursor {
   position: fixed;
   width: 6px; height: 6px;
@@ -73,7 +73,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
  pointer-events:none;
 }
 
-/* ── INVERTING SWISS INTEGRATED NAVIGATION ── */
+/* ── TYPOGRAPHIC NAV BAR ── */
 .nav {
   position: fixed; 
   top: 0; left: 0; right: 0;
@@ -83,9 +83,17 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   z-index: 100;
   mix-blend-mode: difference;
 }
+.nav-brand-group {
+  display: flex; flex-direction: column; gap: 4px;
+}
 .nav-logo {
   font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none;
 }
+.nav-email {
+  font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.55); text-decoration: none; letter-spacing: -0.01em; transition: color 0.2s;
+}
+.nav-email:hover { color: #fff; }
+
 .nav-center-group {
   display: flex; align-items: center; gap: 60px;
 }
@@ -97,26 +105,19 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 }
 .nav-item:hover, .nav-item.active { color: #fff; }
 
-.nav-contact-stack {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
-}
-.nav-email {
-  font-size: 14px; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: -0.01em;
-}
-
-/* ── MAIN CONTENT ROUTER WRAPPER ── */
+/* ── MAIN ROUTER WRAPPER ── */
 #viewRouter {
   position: relative;
   width: 100%;
   z-index: 10;
 }
 
-/* ── INDEX / HOME VIEW ── */
+/* ── HOME / INDEX VIEW ── */
 .home-view {
   position: fixed; inset: 0; 
   opacity: 1; visibility: visible;
   pointer-events: all;
-  touch-action: none; /* Lock standard browser viewport scroll bounce */
+  touch-action: none;
 }
 
 .square-container {
@@ -156,7 +157,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   font-size: 14px; font-weight: 400; color: rgba(0,0,0,.45); line-height: 1.6; letter-spacing: -0.01em;
 }
 
-/* ── FLAT PAGE LAYOUTS (PROJECT & ABOUT) ── */
+/* ── FLAT PAGE LAYOUTS ── */
 .page-view {
   position: absolute;
   top: 0; left: 0;
@@ -217,7 +218,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 }
 .spec-value { font-size: 20px; font-weight: 400; color: rgba(0,0,0,.8); letter-spacing: -0.01em; line-height: 1.4; }
 
-/* ── RESUME FRAMEWORK SPECIFICS ── */
+/* ── EXPERIENCE SECTION ── */
 .resume-container {
   display: flex; flex-direction: column; gap: 48px; width: 100%;
 }
@@ -253,9 +254,16 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 .step-num { font-size: 15px; font-weight: 500; color: rgba(0,0,0,.3); letter-spacing: -0.01em; }
 .step-text { font-size: 21px; line-height: 1.55; color: rgba(0,0,0,.75); font-weight: 400; letter-spacing: -0.015em; }
 
+/* ── FULL WIDTH SECURE FOOTER ── */
 .footer-nav {
-  margin: 140px -100px 0 -100px;
-  padding: 100px;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 140px;
+  padding: 100px 100px;
   background: #000;
   display: flex;
   justify-content: space-between;
@@ -279,6 +287,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 }
 .next-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
+/* ── RESPONSIVE BREAKPOINTS ── */
 @media(max-width:1024px) {
   .nav { padding: 0 30px; height: 90px; }
   .nav-center-group { gap: 30px; }
@@ -286,7 +295,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   .specs-grid { grid-template-columns: 1fr 1fr; }
   .case-hero { padding: 160px 50px 50px 50px; }
   .case-body { padding: 80px 50px 0 50px; gap: 100px; }
-  .footer-nav { margin: 100px -50px 0 -50px; padding: 60px 50px; flex-direction: column; gap: 24px; align-items: stretch; }
+  .footer-nav { margin-top: 100px; padding: 60px 50px; flex-direction: column; gap: 24px; align-items: stretch; }
   .btn-group { flex-direction: column; }
   .resume-row { grid-template-columns: 1fr; gap: 8px; }
   .resume-period { text-align: left; }
@@ -301,14 +310,14 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
     justify-content: space-between;
     background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
   }
+  .nav-brand-group {
+    gap: 2px;
+  }
   .nav-center-group {
     gap: 16px;
   }
   .nav-links {
     gap: 16px;
-  }
-  .nav-contact-stack{
-    display: none !important;
   }
   .square-container { 
     left: 20px; 
@@ -344,7 +353,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
     padding: 40px 0;
   }
   .footer-nav {
-    margin: 80px -24px 0 -24px;
+    margin-top: 80px;
     padding: 60px 24px;
   }
 }
@@ -357,7 +366,10 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 <div class="background-gallery"></div>
 
 <div class="nav" role="navigation" aria-label="Primary navigation">
-  <a href="#" class="nav-logo" id="brandLogo">Dalton Strang</a>
+  <div class="nav-brand-group">
+    <a href="#" class="nav-logo" id="brandLogo">Dalton Strang</a>
+    <a href="mailto:hello@daltonstrang.design" class="nav-email">hello@daltonstrang.design</a>
+  </div>
   <div class="nav-center-group">
     <div class="nav-links">
       <a href="#" class="nav-item active" id="navIndex">Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)</a>
@@ -751,7 +763,6 @@ function goTo(next, direction=1){
   const nextBG = createBG(projects[next].bg);
   const nextTitle = createTitle(next);
 
-  // Direction parameters are mapped symmetrically to vertical movement vectors
   gsap.set(nextBG, { clipPath: direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" });
   gsap.set(nextTitle, { opacity: 0, y: direction > 0 ? 40 : -40 });
 
@@ -808,12 +819,11 @@ window.addEventListener("touchend", (e) => {
   const diffX = touchStartX - e.changedTouches[0].clientX;
   const diffY = touchStartY - e.changedTouches[0].clientY;
   
-  // Isolate user intention: trigger only when vertical swipe distance exceeds horizontal noise
   if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 40) {
     if (diffY > 0) {
-      goTo(current + 1, 1);  // Swiped up: display subsequent slide element
+      goTo(current + 1, 1);  
     } else {
-      goTo(current - 1, -1); // Swiped down: display prior slide element
+      goTo(current - 1, -1); 
     }
   }
 });
