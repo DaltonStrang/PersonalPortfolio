@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dalton Strang — Portfolio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; }
+
+body {
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+  cursor: none;
+}
+:root{
+  --surface:#fbfbfa;
+  --text:#111;
+  --muted:rgba(0,0,0,.55);
+}
+html{scroll-behavior:smooth;}
+::selection{background:#fff;color:#000;}
+
+a:focus-visible, button:focus-visible, .square:focus-visible{
+ outline:3px solid #107dff;
+ outline-offset:4px;
+}
+@media (prefers-reduced-motion: reduce){
+ *{
+   animation:none !important;
+   transition:none !important;
+   scroll-behavior:auto !important;
+ }
+}
+
+
+
+/* ── CUSTOM REFINED CURSOR ── */
+#cursor {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: width .3s cubic-bezier(0.215, 0.610, 0.355, 1), height .3s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+#cursor.expanded { width: 50px; height: 50px; }
+
+/* ── BACKGROUND GALLERY ── */
+.background-gallery {
+  position: fixed; inset: 0; overflow: hidden; z-index: 1;
+}
+.bg-slide {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+  filter:none;
+}
+.background-gallery:after{
+ content:'';
+ position:absolute;
+ inset:0;
+ background:linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.15));
+ pointer-events:none;
+}
+
+
+/* ── INVERTING SWISS INTEGRATED NAVIGATION ── */
+.nav {
+  position: fixed; 
+  top: 0; left: 0; right: 0;
+  height: 120px;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 60px;
+  z-index: 100;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+.nav-logo {
+  font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none;
+  pointer-events: all; cursor: none;
+}
+.nav-center-group {
+  display: flex; align-items: center; gap: 60px;
+  pointer-events: all;
+}
+.nav-links {
+  display: flex; gap: 40px; font-size: 15px; font-weight: 400;
+}
+.nav-item {
+  color: rgba(255, 255, 255, 0.55); text-decoration: none; cursor: none; transition: color 0.2s;
+}
+.nav-item:hover, .nav-item.active { color: #fff; }
+
+.nav-contact-stack {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  pointer-events: all;
+}
+.nav-email {
+  font-size: 14px; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: -0.01em; cursor: none;
+}
+.nav-socials {
+  display: flex; gap: 18px;
+}
+.nav-social-link {
+  font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.55); text-decoration: none; letter-spacing: 0.05em; cursor: none; transition: color 0.2s;
+}
+.nav-social-link:hover { color: #fff; }
+
+/* ── MAIN CONTENT ROUTER WRAPPER ── */
+#viewRouter {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+}
+
+/* ── INDEX / HOME VIEW ── */
+.home-view {
+  position: fixed; inset: 0; 
+  opacity: 1; visibility: visible;
+  pointer-events: all;
+}
+
+.square-container {
+  position: fixed;
+  left: 60px; bottom: 60px;
+  width: 30vw; min-width: 480px;
+  aspect-ratio: 1;
+  z-index: 40;
+}
+
+.square {
+  width: 100%; height: 100%;
+  background: #fbfbfa;
+  overflow: hidden;
+  cursor: none;
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 30px 120px rgba(0,0,0,.28);
+  backdrop-filter: blur(10px);
+}
+
+
+.title-slide {
+  position: absolute; inset: 0;
+  color: #000;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 50px;
+}
+.project-number {
+  font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35);
+}
+.project-title {
+  font-size: clamp(2.4rem, 3.2vw, 4.2rem);
+  line-height: 0.95; letter-spacing: -0.04em; font-weight: 500;
+}
+.word { display: inline-block; margin-right: .18em; }
+.project-tags {
+  font-size: 14px; font-weight: 400; color: rgba(0,0,0,.45); line-height: 1.6; letter-spacing: -0.01em;
+}
+
+/* ── FLAT PAGE LAYOUTS (PROJECT & ABOUT) ── */
+.page-view {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  background: #fbfbfa;
+  color: #000;
+  opacity: 0; 
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.case-hero {
+  width: 100%; height: 75vh;
+  background: #fbfbfa;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 220px 100px 80px 100px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.case-hero .project-number {
+  font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.45);
+}
+.case-hero .project-title {
+  font-size: clamp(3.8rem, 6.8vw, 8rem);
+  max-width: 85%;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.case-hero .project-tags {
+  font-size: 18px; font-weight: 400; color: rgba(0,0,0,.5); letter-spacing: -0.01em;
+}
+
+.case-body {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 120px 100px 0 100px;
+  display: flex; flex-direction: column; gap: 140px;
+}
+
+.editorial-intro {
+  display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px; align-items: start;
+}
+.section-label {
+  font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35);
+}
+.case-desc {
+  font-size: clamp(1.6rem, 2.2vw, 2.5rem);
+  line-height: 1.45; color: rgba(0,0,0,0.85); font-weight: 400; letter-spacing: -0.02em;
+}
+
+.specs-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
+  border-top: 1px solid rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.06);
+  padding: 60px 0;
+}
+.spec-label {
+  font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); margin-bottom: 14px;
+}
+.spec-value { font-size: 20px; font-weight: 400; color: rgba(0,0,0,.8); letter-spacing: -0.01em; line-height: 1.4; }
+
+/* ── RESUME FRAMEWORK SPECIFICS ── */
+.resume-container {
+  display: flex; flex-direction: column; gap: 48px; width: 100%;
+}
+.resume-row {
+  display: grid; grid-template-columns: 1.5fr 3fr 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.resume-row:first-child { border-top: 1px solid rgba(0,0,0,0.06); }
+.resume-org { font-size: 18px; font-weight: 500; color: #000; }
+.resume-role { font-size: 18px; font-weight: 400; color: rgba(0,0,0,0.8); }
+.resume-period { font-size: 15px; font-weight: 400; color: rgba(0,0,0,0.4); text-align: right; }
+
+.case-visuals {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.img-container img { width: 100%; height: auto; display: block; filter: grayscale(15%); transition: filter 0.5s; }
+.img-container img:hover { filter: grayscale(0%); }
+
+.palette-section {
+  display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px;
+}
+.palette-row { display: flex; gap: 2px; height: 44px; width: 100%; }
+.palette-swatch { flex: 1; height: 100%; }
+
+.process-section {
+  display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px;
+}
+.process-steps { display: flex; flex-direction: column; }
+.process-step {
+  display: flex; gap: 60px; align-items: flex-start;
+  padding: 44px 0; border-bottom: 1px solid rgba(0,0,0,.05);
+}
+.process-step:first-child { border-top: 1px solid rgba(0,0,0,.05); }
+.step-num { font-size: 15px; font-weight: 500; color: rgba(0,0,0,.3); letter-spacing: -0.01em; }
+.step-text { font-size: 21px; line-height: 1.55; color: rgba(0,0,0,.75); font-weight: 400; letter-spacing: -0.015em; }
+
+.footer-nav {
+  margin: 140px -100px 0 -100px;
+  padding: 100px;
+  background: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-group {
+  display: flex;
+  gap: 20px;
+}
+.back-btn {
+  font-size: 15px; font-weight: 500; background: #fff; color: #000; border: none;
+  cursor: none; letter-spacing: -0.01em; padding: 18px 38px; border: 1px solid #fff;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.back-btn:hover { background: #000; color: #fff; border-color: rgba(255,255,255,0.4); }
+
+.next-btn {
+  font-size: 15px; font-weight: 500; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25);
+  cursor: none; letter-spacing: -0.01em; padding: 18px 38px;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.next-btn:hover { background: #fff; color: #000; border-color: #fff; }
+
+@media(max-width:1024px) {
+  .nav { padding: 0 30px; height: 90px; }
+  .nav-center-group { gap: 30px; }
+  .editorial-intro, .palette-section, .process-section { grid-template-columns: 1fr; gap: 32px; }
+  .specs-grid { grid-template-columns: 1fr 1fr; }
+  .case-hero { padding: 160px 50px 50px 50px; }
+  .case-body { padding: 80px 50px 0 50px; gap: 100px; }
+  .footer-nav { margin: 100px -50px 0 -50px; padding: 60px 50px; flex-direction: column; gap: 24px; align-items: stretch; }
+  .btn-group { flex-direction: column; }
+  .resume-row { grid-template-columns: 1fr; gap: 8px; }
+  .resume-period { text-align: left; }
+}
+@media(max-width:768px) {
+  .square-container { left: 0; bottom: 0; width: 100vw; height: 45vh; min-width: 100%; }
+  .nav-contact-stack { display: none; }
+}
+
+@media(max-width:768px){
+  .nav{
+    height:auto;
+    padding:20px;
+    align-items:flex-start;
+    flex-direction:column;
+    gap:14px;
+    background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
+  }
+  .nav-center-group,
+  .nav-links{
+    width:100%;
+    gap:16px;
+    justify-content:space-between;
+  }
+  .nav-contact-stack{
+    display:flex !important;
+    align-items:flex-start;
+  }
+  .project-title{
+    line-height:1;
+  }
+  .case-hero .project-title{
+    max-width:100%;
+    font-size:clamp(2.6rem,10vw,4rem);
+  }
+  .specs-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div class="background-gallery"></div>
+
+<!-- HARD GRADIENTLESS INVERTING HEADER LAYER -->
+<div class="nav" role="navigation" aria-label="Primary navigation">
+  <a href="#" class="nav-logo" id="brandLogo">Dalton Strang</a>
+  <div class="nav-center-group">
+    <div class="nav-links">
+      <a href="#" class="nav-item active" id="navIndex">Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)</a>
+      <a href="#" class="nav-item" id="navAbout">About</a>
+    </div>
+  </div>
+  <div class="nav-contact-stack">
+    <a href="mailto:hello@daltonstrang.design" class="nav-email">hello@daltonstrang.design</a>
+    <div class="nav-socials">
+      <a href="#" class="nav-social-link">TWITTER</a>
+      <a href="#" class="nav-social-link">LINKEDIN</a>
+      <a href="#" class="nav-social-link">GITHUB</a>
+    </div>
+  </div>
+</div>
+
+<!-- CONTAINER FOR FLAT ROUTED PAGES -->
+<div id="viewRouter">
+  
+  <!-- INDEX LAYOUT -->
+  <div class="home-view" id="homeView">
+    <div class="square-container" id="squareContainer">
+      <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
+    </div>
+  </div>
+
+  <!-- SEPARATE DYNAMIC DATA LAYOUT -->
+  <div class="page-view" id="pageView">
+    <div class="case-hero">
+      <div class="project-number" id="caseOverline"></div>
+      <h1 class="project-title" id="caseTitle"></h1>
+      <div class="project-tags" id="caseTags"></div>
+    </div>
+    <div class="case-body" id="caseBodyContent"></div>
+  </div>
+  
+</div>
+
+<script>
+const projects=[
+{
+  title:"Palette Systems",
+  tags:["Brand Identity","Colour Strategy"],
+  year:"2025",client:"Palette Inc.",
+  scope:"Identity Systems · Digital Products",
+  industry:"Design Tools",duration:"14 weeks",
+  desc:"A comprehensive identity system built entirely around chromatic language — treating colour not as decoration but as primary communication. The functional framework adapts across 48 digital touchpoints cleanly.",
+  palette:["#1a1a2e","#16213e","#0f3460","#e94560","#f5f0e8"],
+  process:["Discovery & competitive audit across 120 design-tool platforms","Developed structural identity directions focusing on typographic scale","Built modular colour grammar with 5 primary + 14 secondary tokens","Delivered adaptive asset framework optimized for screens and systems"],
+  images:["https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1800&q=80"
+},
+{
+  title:"Antithesis Studio",
+  tags:["Visual Architecture","Type Design"],
+  year:"2025",client:"Antithesis",
+  scope:"Identity Architecture · Bespoke Display Axis",
+  industry:"Architecture Office",duration:"22 weeks",
+  desc:"An identity built for an architectural practice that focuses on contrast: raw and refined, permanent and ephemeral. A tailored display typeface anchoring systemic grid layouts provides structural continuity.",
+  palette:["#0d0d0d","#1c1c1c","#f0ede8","#c8b89a","#8b7355"],
+  process:["Brand strategy workshops defining typographic priorities","Display type layouts: sketch concepts translated to clean vector paths","Engineered custom variable scaling rules for spatial systems","Production deployment: digital layout templates and spatial signage specs"],
+  images:["https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1800&q=80"
+},
+{
+  title:"Monomark Identity",
+  tags:["Logomark Architecture","Motion Guidelines"],
+  year:"2024",client:"Monomark",
+  scope:"Mark Architecture · Interaction Mechanics",
+  industry:"Finance Platforms",duration:"10 weeks",
+  desc:"A minimalist single-stroke monogram platform developed for a specialized private market platform. Designed to scale seamlessly from 16px layouts up to spatial environments without losing structural balance.",
+  palette:["#0a0a0a","#1f1f1f","#2d4a3e","#4a9068","#e8f5e9"],
+  process:["Distilled complex identity elements into a reductive structural grammar","Constructed architectural grid boundaries based on strict design constraints","Engineered custom interaction states and dynamic transition metrics","Delivered functional specification guidelines mapping interface behavior"],
+  images:["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1800&q=80"
+},
+{
+  title:"Kinetic Archive",
+  tags:["Brand Systems","Editorial Direction"],
+  year:"2024",client:"Kinetic Foundation",
+  scope:"Design Tokens · Spatial Layouts · Web Architecture",
+  industry:"Arts & Culture",duration:"18 weeks",
+  desc:"An architectural identity design framework for a regional moving-image archive. Built heavily upon a flexible structural grid system that treats archival metadata with clear hierarchy and functional beauty.",
+  palette:["#f7f4ef","#e8e4dc","#c4a882","#8b6914","#2c1810"],
+  process:["Investigated historical spatial identity layouts and grid frameworks","Constructed a scalable 6-column canvas utilizing limited typographic variations","Developed structured layout models optimized across print surfaces and digital screens","Exported integrated design tokens directly into production code environments"],
+  images:["https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1558618047-f4e60cef3895?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1800&q=80"
+}
+];
+
+let current=0;
+let animating=false;
+let currentView = 'index'; 
+
+const gallery=document.querySelector(".background-gallery");
+const squareContainer=document.getElementById("squareContainer");
+const square=document.getElementById("square");
+const homeView=document.getElementById("homeView");
+const pageView=document.getElementById("pageView");
+const cursor=document.getElementById("cursor");
+
+document.getElementById("totalIndexStr").textContent = String(projects.length).padStart(2,"0");
+
+/* ── CURSOR INTERACTION ENGINE ── */
+let mx=window.innerWidth/2, my=window.innerHeight/2;
+let cx=mx, cy=my;
+document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
+(function animCursor(){
+  cx+=(mx-cx)*.12; cy+=(my-cy)*.12;
+  cursor.style.left=cx+"px"; cursor.style.top=cy+"px";
+  requestAnimationFrame(animCursor);
+})();
+
+function setupCursorHovers() {
+  const elements = [
+    square, 
+    document.getElementById("navAbout"), 
+    document.getElementById("navIndex"), 
+    document.getElementById("brandLogo"),
+    document.querySelector(".nav-email"),
+    ...document.querySelectorAll(".nav-social-link")
+  ];
+  elements.forEach(el => {
+    if(!el) return;
+    el.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
+    el.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
+  });
+}
+
+function bindDynamicButtons() {
+  const backBtn = document.getElementById("caseBackBtn");
+  const nextBtn = document.getElementById("caseNextBtn");
+  
+  [backBtn, nextBtn].forEach(btn => {
+    if(!btn) return;
+    btn.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
+    btn.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
+  });
+
+  if(backBtn) backBtn.addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+  if(nextBtn) nextBtn.addEventListener("click", (e) => { e.preventDefault(); navigateNextProject(); });
+}
+
+/* ── DOM GENERATORS ── */
+function splitWords(text){
+  return text.split(" ").map(w=>`<span class="word">${w}</span>`).join(" ");
+}
+function createBG(src){
+  const img=document.createElement("img");
+  img.src=src; img.className="bg-slide";
+  gallery.appendChild(img); return img;
+}
+function createTitle(index){
+  const p=projects[index];
+  const wrap=document.createElement("div");
+  wrap.className="title-slide";
+  wrap.innerHTML=`
+    <div class="project-number">${String(index+1).padStart(2,"0")} — ${String(projects.length).padStart(2,"0")}</div>
+    <h1 class="project-title">${splitWords(p.title)}</h1>
+    <div class="project-tags">${p.tags.join(" &nbsp;·&nbsp; ")}</div>
+  `;
+  square.appendChild(wrap); return wrap;
+}
+
+// Initialise Index Canvas Assets
+createBG(projects[0].bg);
+createTitle(0);
+setupCursorHovers();
+
+/* ── GRAPHIC LAYOUT GENERATOR ── */
+function generateViewHTML(target) {
+  if(target === 'about') {
+    return `
+      <div class="editorial-intro">
+        <div class="section-label">Profile</div><div style="margin-bottom:24px;font-size:14px;color:rgba(0,0,0,.45)">Designer • Front‑End Developer • Design Systems Specialist</div>
+        <p class="case-desc">Philadelphia-based product designer, front-end engineer, and independent collaborator building high-utility interactive spaces. Aligning strictly with functional Swiss design methodology, my methodology weights absolute grid logic, geometric containment, and deliberate typographic hierarchy to optimize product utility and structural value.</p>
+      </div>
+      <div class="specs-grid">
+        <div><div class="spec-label">Core Engineering</div><div class="spec-value">Interface Engineering<br>Design Systems UI<br>JavaScript & Python</div></div>
+        <div><div class="spec-label">Availability</div><div class="spec-value">Open for Contracts<br>Contract Rate: $50 / hr</div></div>
+        <div><div class="spec-label">Location Base</div><div class="spec-value">Philadelphia, PA<br>Remote / Hybrid Available</div></div>
+        <div><div class="spec-label">Direct Line</div><div class="spec-value">hello@daltonstrang.design</div></div>
+      </div>
+      
+      <!-- PROFESSIONAL BACKGROUND / RESUME WORKFLOW -->
+      <div class="editorial-intro">
+        <div class="section-label">Experience</div>
+        <div class="resume-container">
+          <div class="resume-row">
+            <div class="resume-org">Independent Practice</div>
+            <div class="resume-role">Freelance Designer & Front-End Engineer<br>Developing systematic code-driven UI frameworks, bespoke application architecture, and production-ready visual systems for commercial clients.</div>
+            <div class="resume-period">2024 — Pres.</div>
+          </div>
+          <div class="resume-row">
+            <div class="resume-org">PhillyJS</div>
+            <div class="resume-role">Organizer / Primary Logistics Contact<br>Directing scheduling parameters, community outreach coordination, event automation engineering, and sponsor logistics for the Philadelphia JavaScript Club ecosystem.</div>
+            <div class="resume-period">2025 — Pres.</div>
+          </div>
+          <div class="resume-row">
+            <div class="resume-org">CobbleStone Software</div>
+            <div class="resume-role">UI Designer & Front-End Developer<br>Architecting targeted system modules, multi-variant web experiences, application assets, and interaction logic sets within enterprise product boundaries.</div>
+            <div class="resume-period">2023 — 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="editorial-intro">
+        <div class="section-label">Technical Competencies</div>
+        <div class="resume-container">
+          <div class="resume-row">
+            <div class="resume-org">Design & Layout</div>
+            <div class="resume-role">Swiss Grid Typography, Scale Architectures, Modular Design Tokens, Corporate Identity Layouts, Design Token Export Pipelines</div>
+            <div class="resume-period">Expertise</div>
+          </div>
+          <div class="resume-row">
+            <div class="resume-org">Development Axis</div>
+            <div class="resume-role">HTML5/CSS3 Core, Modern Vanilla JavaScript (ES6+), State Management UI, Git/Version Automation, Python Automation Scripts</div>
+            <div class="resume-period">Expertise</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <button class="back-btn" id="caseBackBtn">Return to Index</button>
+        <div></div>
+      </div>
+    `;
+  } else {
+    const p = projects[current];
+    const nextIndex = (current + 1) % projects.length;
+    const nextProjectTitle = projects[nextIndex].title;
+
+    return `
+      <div class="editorial-intro">
+        <div class="section-label">Case Analysis</div>
+        <p class="case-desc">${p.desc}</p>
+      </div>
+      <div class="specs-grid">
+        <div><div class="spec-label">Scope</div><div class="spec-value">${p.scope}</div></div>
+        <div><div class="spec-label">Client</div><div class="spec-value">${p.client}</div></div>
+        <div><div class="spec-label">Duration</div><div class="spec-value">${p.duration}</div></div>
+        <div><div class="spec-label">Timeline</div><div class="spec-value">${p.year}</div></div>
+      </div>
+      <div class="case-visuals">
+        <div class="img-container"><img src="${p.images[0]}" alt="Project showcase image"></div>
+        <div class="img-container"><img src="${p.images[1]}" alt="Project showcase image"></div>
+      </div>
+      <div class="palette-section">
+        <div class="section-label">System Swatches</div>
+        <div class="palette-row">${p.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join("")}</div>
+      </div>
+      <div class="process-section">
+        <div class="section-label">Implementation Steps</div>
+        <div class="process-steps">${p.process.map((s,i)=>`
+          <div class="process-step">
+            <div class="step-num">${String(i+1).padStart(2,"0")}</div>
+            <div class="step-text">${s}</div>
+          </div>`).join("")}
+        </div>
+      </div>
+      <div class="footer-nav">
+        <button class="back-btn" id="caseBackBtn">Return to Index</button>
+        <div class="btn-group">
+          <button class="next-btn" id="caseNextBtn">Next: ${nextProjectTitle}</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function updateNavStyles(targetView) {
+  document.getElementById("navIndex").classList.remove("active");
+  document.getElementById("navAbout").classList.remove("active");
+  
+  if (targetView === 'index') {
+    document.getElementById("navIndex").classList.add("active");
+  } else if (targetView === 'about') {
+    document.getElementById("navAbout").classList.add("active");
+  }
+}
+
+/* ── ARCHITECTURAL VIEW ROUTER ── */
+function switchView(target) {
+  if (animating || currentView === target) return;
+  animating = true;
+
+  updateNavStyles(target);
+
+  const oldViewEl = currentView === 'index' ? homeView : pageView;
+  const newViewEl = target === 'index' ? homeView : pageView;
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      gsap.set(oldViewEl, { visibility: "hidden", pointerEvents: "none" });
+      
+      if (target !== 'index') {
+        if (target === 'about') {
+          document.getElementById("caseOverline").textContent = "Dalton Strang";
+          document.getElementById("caseTitle").textContent = "Design Practice & Systems";
+          document.getElementById("caseTags").textContent = "Product Designer & Front-End Engineer";
+        } else {
+          const p = projects[current];
+          document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
+          document.getElementById("caseTitle").textContent = p.title;
+          document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
+        }
+        document.getElementById("caseBodyContent").innerHTML = generateViewHTML(target);
+        bindDynamicButtons();
+      }
+
+      window.scrollTo(0, 0);
+      currentView = target;
+
+      gsap.set(newViewEl, { visibility: "visible", pointerEvents: "all" });
+      
+      gsap.timeline({
+        onComplete: () => { animating = false; setupCursorHovers(); }
+      })
+      .to(newViewEl, { opacity: 1, duration: 0.4, ease: "power2.out" })
+      .fromTo(target === 'index' ? ".square-container" : [".case-hero", ".case-body"], 
+        { y: 15 }, { y: 0, duration: 0.5, ease: "power3.out" }, 0
+      );
+    }
+  });
+
+  tl.to(oldViewEl, { opacity: 0, duration: 0.3, ease: "power2.inOut" });
+}
+
+/* ── SEAMLESS CASE-TO-CASE NAVIGATION ── */
+function navigateNextProject() {
+  if (animating) return;
+  animating = true;
+
+  let next = current + 1;
+  if (next >= projects.length) next = 0;
+
+  document.getElementById("currentIndexStr").textContent = String(next+1).padStart(2,"0");
+  const currentBG = gallery.querySelector(".bg-slide:last-child");
+  const nextBG = createBG(projects[next].bg);
+  
+  gsap.set(nextBG, { clipPath: "inset(100% 0 0 0)" });
+
+  square.innerHTML = "";
+  current = next;
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      currentBG.remove();
+      createTitle(next);
+      animating = false;
+    }
+  });
+
+  tl.to(pageView, { opacity: 0, y: -20, duration: 0.25, ease: "power2.in" });
+  tl.to(nextBG, { clipPath: "inset(0% 0 0 0%)", duration: 0.65, ease: "power3.inOut" }, 0);
+  tl.call(() => {
+    document.getElementById("caseBodyContent").innerHTML = ""; 
+    const p = projects[current];
+    document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
+    document.getElementById("caseTitle").textContent = p.title;
+    document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
+    document.getElementById("caseBodyContent").innerHTML = generateViewHTML('project');
+    bindDynamicButtons();
+    window.scrollTo(0, 0);
+  }, null, 0.25);
+  tl.to(pageView, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.28);
+}
+
+/* ── CORE COMPONENT CONTROLLER LINKS ── */
+square.addEventListener("click", () => switchView('project'));
+
+square.addEventListener("keydown",(e)=>{
+ if(e.key==="Enter" || e.key===" "){
+   e.preventDefault();
+   switchView('project');
+ }
+});
+
+document.getElementById("navAbout").addEventListener("click", (e) => { e.preventDefault(); switchView('about'); });
+document.getElementById("navIndex").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+document.getElementById("brandLogo").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+
+/* ── REFINED SLIDE ENGINE ── */
+function goTo(next, direction=1){
+  if(animating || currentView !== 'index') return;
+  if(next < 0) next = projects.length - 1;
+  if(next >= projects.length) next = 0;
+  animating = true;
+
+  document.getElementById("currentIndexStr").textContent = String(next+1).padStart(2,"0");
+
+  const currentBG = gallery.querySelector(".bg-slide:last-child");
+  const currentTitle = square.querySelector(".title-slide:last-child");
+
+  const nextBG = createBG(projects[next].bg);
+  const nextTitle = createTitle(next);
+
+  gsap.set(nextBG, { clipPath: direction > 0 ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" });
+  gsap.set(nextTitle, { opacity: 0, x: direction > 0 ? 30 : -30 });
+
+  const words = nextTitle.querySelectorAll(".word");
+  const tl = gsap.timeline({
+    onComplete(){
+      currentBG.remove();
+      currentTitle.remove();
+      current = next;
+      animating = false;
+    }
+  });
+
+  tl.to(nextBG, { clipPath: "inset(0 0% 0 0%)", duration: 1.0, ease: "power4.inOut" }, 0);
+  tl.to(squareContainer, { scaleX: 1.01, duration: 0.25, ease: "power2.out" }, 0);
+  tl.to(squareContainer, { scaleX: 1, duration: 0.4, ease: "power4.out" }, 0.25);
+
+  tl.to(currentTitle, { x: direction > 0 ? -30 : 30, opacity: 0, duration: 0.45, ease: "power3.in" }, 0);
+  tl.to(nextTitle, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.3);
+  tl.fromTo(words, { y: 36, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.03, duration: 0.5, ease: "power4.out" }, 0.32);
+}
+
+/* ── EVENT ROUTERS ── */
+window.addEventListener("wheel", (e) => {
+  if (animating || currentView !== 'index') return;
+  if (e.deltaY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
+}, { passive: true });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && currentView !== 'index') { switchView('index'); return; }
+  
+  if (e.key === "ArrowDown" || e.key === "ArrowRight") { 
+    if(currentView === 'project') navigateNextProject(); 
+    else if(currentView === 'index') goTo(current + 1, 1); 
+  }
+  if (e.key === "ArrowUp" || e.key === "ArrowLeft") { 
+    if(currentView === 'index') goTo(current - 1, -1); 
+  }
+});
+
+let startX = 0;
+window.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; }, { passive: true });
+window.addEventListener("touchend", (e) => {
+  if (currentView !== 'index') return;
+  const diff = startX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) < 50) return;
+  if (diff > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
+});
+</script>
+</body>
+</html>
