@@ -13,7 +13,6 @@ body {
   background: #000;
   color: #fff;
   overflow-x: hidden;
-  cursor: none;
 }
 :root{
   --surface:#fbfbfa;
@@ -35,8 +34,6 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
  }
 }
 
-
-
 /* ── CUSTOM REFINED CURSOR ── */
 #cursor {
   position: fixed;
@@ -48,8 +45,14 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   transform: translate(-50%, -50%);
   mix-blend-mode: difference;
   transition: width .3s cubic-bezier(0.215, 0.610, 0.355, 1), height .3s cubic-bezier(0.215, 0.610, 0.355, 1);
+  display: none; /* Controlled via modern JS capability pointer test */
 }
 #cursor.expanded { width: 50px; height: 50px; }
+
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+  #cursor { display: block; }
+}
 
 /* ── BACKGROUND GALLERY ── */
 .background-gallery {
@@ -70,7 +73,6 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
  pointer-events:none;
 }
 
-
 /* ── INVERTING SWISS INTEGRATED NAVIGATION ── */
 .nav {
   position: fixed; 
@@ -79,37 +81,33 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   display: flex; justify-content: space-between; align-items: center;
   padding: 0 60px;
   z-index: 100;
-  pointer-events: none;
   mix-blend-mode: difference;
 }
 .nav-logo {
   font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none;
-  pointer-events: all; cursor: none;
 }
 .nav-center-group {
   display: flex; align-items: center; gap: 60px;
-  pointer-events: all;
 }
 .nav-links {
   display: flex; gap: 40px; font-size: 15px; font-weight: 400;
 }
 .nav-item {
-  color: rgba(255, 255, 255, 0.55); text-decoration: none; cursor: none; transition: color 0.2s;
+  color: rgba(255, 255, 255, 0.55); text-decoration: none; transition: color 0.2s;
 }
 .nav-item:hover, .nav-item.active { color: #fff; }
 
 .nav-contact-stack {
   display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
-  pointer-events: all;
 }
 .nav-email {
-  font-size: 14px; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: -0.01em; cursor: none;
+  font-size: 14px; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: -0.01em;
 }
 .nav-socials {
   display: flex; gap: 18px;
 }
 .nav-social-link {
-  font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.55); text-decoration: none; letter-spacing: 0.05em; cursor: none; transition: color 0.2s;
+  font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.55); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s;
 }
 .nav-social-link:hover { color: #fff; }
 
@@ -125,6 +123,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   position: fixed; inset: 0; 
   opacity: 1; visibility: visible;
   pointer-events: all;
+  touch-action: none; /* Lock viewport bounce during card swiping */
 }
 
 .square-container {
@@ -139,13 +138,11 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   width: 100%; height: 100%;
   background: #fbfbfa;
   overflow: hidden;
-  cursor: none;
   position: relative;
   border-radius: 16px;
   box-shadow: 0 30px 120px rgba(0,0,0,.28);
   backdrop-filter: blur(10px);
 }
-
 
 .title-slide {
   position: absolute; inset: 0;
@@ -277,14 +274,14 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 }
 .back-btn {
   font-size: 15px; font-weight: 500; background: #fff; color: #000; border: none;
-  cursor: none; letter-spacing: -0.01em; padding: 18px 38px; border: 1px solid #fff;
+  letter-spacing: -0.01em; padding: 18px 38px; border: 1px solid #fff;
   transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 .back-btn:hover { background: #000; color: #fff; border-color: rgba(255,255,255,0.4); }
 
 .next-btn {
   font-size: 15px; font-weight: 500; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25);
-  cursor: none; letter-spacing: -0.01em; padding: 18px 38px;
+  letter-spacing: -0.01em; padding: 18px 38px;
   transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 .next-btn:hover { background: #fff; color: #000; border-color: #fff; }
@@ -301,42 +298,63 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   .resume-row { grid-template-columns: 1fr; gap: 8px; }
   .resume-period { text-align: left; }
 }
-@media(max-width:768px) {
-  .square-container { left: 0; bottom: 0; width: 100vw; height: 45vh; min-width: 100%; }
-  .nav-contact-stack { display: none; }
-}
 
 @media(max-width:768px){
   .nav{
-    height:auto;
-    padding:20px;
-    align-items:flex-start;
-    flex-direction:column;
-    gap:14px;
-    background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
+    height: auto;
+    padding: 24px 20px;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
   }
-  .nav-center-group,
-  .nav-links{
-    width:100%;
-    gap:16px;
-    justify-content:space-between;
+  .nav-center-group {
+    gap: 16px;
+  }
+  .nav-links {
+    gap: 16px;
   }
   .nav-contact-stack{
-    display:flex !important;
-    align-items:flex-start;
+    display: none !important;
+  }
+  .square-container { 
+    left: 20px; 
+    right: 20px; 
+    bottom: 40px; 
+    width: auto; 
+    height: auto; 
+    aspect-ratio: 1; 
+    min-width: 0; 
+  }
+  .title-slide {
+    padding: 30px;
   }
   .project-title{
     line-height:1;
   }
+  .case-hero {
+    padding: 140px 24px 40px 24px;
+    height: auto;
+    gap: 40px;
+  }
   .case-hero .project-title{
     max-width:100%;
-    font-size:clamp(2.6rem,10vw,4rem);
+    font-size:clamp(2.4rem, 9vw, 4rem);
+  }
+  .case-body {
+    padding: 60px 24px 0 24px;
+    gap: 80px;
   }
   .specs-grid{
     grid-template-columns:1fr;
+    gap: 24px;
+    padding: 40px 0;
+  }
+  .footer-nav {
+    margin: 80px -24px 0 -24px;
+    padding: 60px 24px;
   }
 }
-
 </style>
 </head>
 <body>
@@ -345,7 +363,6 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 
 <div class="background-gallery"></div>
 
-<!-- HARD GRADIENTLESS INVERTING HEADER LAYER -->
 <div class="nav" role="navigation" aria-label="Primary navigation">
   <a href="#" class="nav-logo" id="brandLogo">Dalton Strang</a>
   <div class="nav-center-group">
@@ -356,15 +373,9 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   </div>
   <div class="nav-contact-stack">
     <a href="mailto:gstrang123@gmail.com" class="nav-email">gstrang123@gmail.com</a>
-    <!-- <div class="nav-socials">
-      <a href="#" class="nav-social-link">TWITTER</a>
-      <a href="#" class="nav-social-link">LINKEDIN</a>
-      <a href="#" class="nav-social-link">GITHUB</a>
-    </div> -->
   </div>
 </div>
 
-<!-- CONTAINER FOR FLAT ROUTED PAGES -->
 <div id="viewRouter">
   
   <!-- INDEX LAYOUT -->
@@ -454,21 +465,30 @@ document.getElementById("totalIndexStr").textContent = String(projects.length).p
 /* ── CURSOR INTERACTION ENGINE ── */
 let mx=window.innerWidth/2, my=window.innerHeight/2;
 let cx=mx, cy=my;
-document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
-(function animCursor(){
-  cx+=(mx-cx)*.12; cy+=(my-cy)*.12;
-  cursor.style.left=cx+"px"; cursor.style.top=cy+"px";
-  requestAnimationFrame(animCursor);
-})();
+let isTouchDevice = false;
+
+// Robust verification for pointer capabilities
+if (window.matchMedia("(pointer: coarse)").matches) {
+  isTouchDevice = true;
+}
+
+if (!isTouchDevice) {
+  document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
+  (function animCursor(){
+    cx+=(mx-cx)*.12; cy+=(my-cy)*.12;
+    cursor.style.left=cx+"px"; cursor.style.top=cy+"px";
+    requestAnimationFrame(animCursor);
+  })();
+}
 
 function setupCursorHovers() {
+  if (isTouchDevice) return;
   const elements = [
     square, 
     document.getElementById("navAbout"), 
     document.getElementById("navIndex"), 
     document.getElementById("brandLogo"),
-    document.querySelector(".nav-email"),
-    ...document.querySelectorAll(".nav-social-link")
+    document.querySelector(".nav-email")
   ];
   elements.forEach(el => {
     if(!el) return;
@@ -481,11 +501,13 @@ function bindDynamicButtons() {
   const backBtn = document.getElementById("caseBackBtn");
   const nextBtn = document.getElementById("caseNextBtn");
   
-  [backBtn, nextBtn].forEach(btn => {
-    if(!btn) return;
-    btn.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
-    btn.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
-  });
+  if(!isTouchDevice) {
+    [backBtn, nextBtn].forEach(btn => {
+      if(!btn) return;
+      btn.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
+      btn.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
+    });
+  }
 
   if(backBtn) backBtn.addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
   if(nextBtn) nextBtn.addEventListener("click", (e) => { e.preventDefault(); navigateNextProject(); });
@@ -512,7 +534,7 @@ function createTitle(index){
   square.appendChild(wrap); return wrap;
 }
 
-// Initialise Index Canvas Assets
+// Initialize Layout Components
 createBG(projects[0].bg);
 createTitle(0);
 setupCursorHovers();
@@ -532,7 +554,6 @@ function generateViewHTML(target) {
         <div><div class="spec-label">Direct Line</div><div class="spec-value">hello@daltonstrang.design</div></div>
       </div>
       
-      <!-- PROFESSIONAL BACKGROUND / RESUME WORKFLOW -->
       <div class="editorial-intro">
         <div class="section-label">Experience</div>
         <div class="resume-container">
@@ -770,6 +791,7 @@ function goTo(next, direction=1){
 /* ── EVENT ROUTERS ── */
 window.addEventListener("wheel", (e) => {
   if (animating || currentView !== 'index') return;
+  if (Math.abs(e.deltaY) < 10) return; // Ignore micro-scroll thresholds
   if (e.deltaY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
 }, { passive: true });
 
@@ -785,13 +807,30 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-let startX = 0;
-window.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; }, { passive: true });
+/* ── INTUITIVE GESTURE LOGIC FOR SWIPING ── */
+let touchStartX = 0;
+let touchStartY = 0;
+
+window.addEventListener("touchstart", (e) => { 
+  touchStartX = e.touches[0].clientX; 
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
 window.addEventListener("touchend", (e) => {
-  if (currentView !== 'index') return;
-  const diff = startX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) < 50) return;
-  if (diff > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
+  if (currentView !== 'index' || animating) return;
+  
+  const diffX = touchStartX - e.changedTouches[0].clientX;
+  const diffY = touchStartY - e.changedTouches[0].clientY;
+  
+  // Enforce explicit horizontal priority. Prevents standard vertical viewing 
+  // jitters from cross-firing the main view slide deck logic.
+  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+    if (diffX > 0) {
+      goTo(current + 1, 1); 
+    } else {
+      goTo(current - 1, -1);
+    }
+  }
 });
 </script>
 </body>
