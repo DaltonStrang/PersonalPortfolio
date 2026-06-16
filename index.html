@@ -45,7 +45,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   transform: translate(-50%, -50%);
   mix-blend-mode: difference;
   transition: width .3s cubic-bezier(0.215, 0.610, 0.355, 1), height .3s cubic-bezier(0.215, 0.610, 0.355, 1);
-  display: none; /* Controlled via modern JS capability pointer test */
+  display: none;
 }
 #cursor.expanded { width: 50px; height: 50px; }
 
@@ -103,13 +103,6 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 .nav-email {
   font-size: 14px; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: -0.01em;
 }
-.nav-socials {
-  display: flex; gap: 18px;
-}
-.nav-social-link {
-  font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.55); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s;
-}
-.nav-social-link:hover { color: #fff; }
 
 /* ── MAIN CONTENT ROUTER WRAPPER ── */
 #viewRouter {
@@ -123,7 +116,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   position: fixed; inset: 0; 
   opacity: 1; visibility: visible;
   pointer-events: all;
-  touch-action: none; /* Lock viewport bounce during card swiping */
+  touch-action: none; /* Lock standard browser viewport scroll bounce */
 }
 
 .square-container {
@@ -371,21 +364,16 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
       <a href="#" class="nav-item" id="navAbout">About</a>
     </div>
   </div>
-  <div class="nav-contact-stack">
-    <a href="mailto:gstrang123@gmail.com" class="nav-email">gstrang123@gmail.com</a>
-  </div>
 </div>
 
 <div id="viewRouter">
   
-  <!-- INDEX LAYOUT -->
   <div class="home-view" id="homeView">
     <div class="square-container" id="squareContainer">
       <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
     </div>
   </div>
 
-  <!-- SEPARATE DYNAMIC DATA LAYOUT -->
   <div class="page-view" id="pageView">
     <div class="case-hero">
       <div class="project-number" id="caseOverline"></div>
@@ -467,7 +455,6 @@ let mx=window.innerWidth/2, my=window.innerHeight/2;
 let cx=mx, cy=my;
 let isTouchDevice = false;
 
-// Robust verification for pointer capabilities
 if (window.matchMedia("(pointer: coarse)").matches) {
   isTouchDevice = true;
 }
@@ -487,8 +474,7 @@ function setupCursorHovers() {
     square, 
     document.getElementById("navAbout"), 
     document.getElementById("navIndex"), 
-    document.getElementById("brandLogo"),
-    document.querySelector(".nav-email")
+    document.getElementById("brandLogo")
   ];
   elements.forEach(el => {
     if(!el) return;
@@ -534,7 +520,6 @@ function createTitle(index){
   square.appendChild(wrap); return wrap;
 }
 
-// Initialize Layout Components
 createBG(projects[0].bg);
 createTitle(0);
 setupCursorHovers();
@@ -766,8 +751,9 @@ function goTo(next, direction=1){
   const nextBG = createBG(projects[next].bg);
   const nextTitle = createTitle(next);
 
-  gsap.set(nextBG, { clipPath: direction > 0 ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" });
-  gsap.set(nextTitle, { opacity: 0, x: direction > 0 ? 30 : -30 });
+  // Direction parameters are mapped symmetrically to vertical movement vectors
+  gsap.set(nextBG, { clipPath: direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" });
+  gsap.set(nextTitle, { opacity: 0, y: direction > 0 ? 40 : -40 });
 
   const words = nextTitle.querySelectorAll(".word");
   const tl = gsap.timeline({
@@ -779,19 +765,19 @@ function goTo(next, direction=1){
     }
   });
 
-  tl.to(nextBG, { clipPath: "inset(0 0% 0 0%)", duration: 1.0, ease: "power4.inOut" }, 0);
-  tl.to(squareContainer, { scaleX: 1.01, duration: 0.25, ease: "power2.out" }, 0);
-  tl.to(squareContainer, { scaleX: 1, duration: 0.4, ease: "power4.out" }, 0.25);
+  tl.to(nextBG, { clipPath: "inset(0% 0 0 0)", duration: 1.0, ease: "power4.inOut" }, 0);
+  tl.to(squareContainer, { scaleY: 1.01, duration: 0.25, ease: "power2.out" }, 0);
+  tl.to(squareContainer, { scaleY: 1, duration: 0.4, ease: "power4.out" }, 0.25);
 
-  tl.to(currentTitle, { x: direction > 0 ? -30 : 30, opacity: 0, duration: 0.45, ease: "power3.in" }, 0);
-  tl.to(nextTitle, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.3);
-  tl.fromTo(words, { y: 36, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.03, duration: 0.5, ease: "power4.out" }, 0.32);
+  tl.to(currentTitle, { y: direction > 0 ? -40 : 40, opacity: 0, duration: 0.45, ease: "power3.in" }, 0);
+  tl.to(nextTitle, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
+  tl.fromTo(words, { y: 24, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.02, duration: 0.5, ease: "power4.out" }, 0.32);
 }
 
 /* ── EVENT ROUTERS ── */
 window.addEventListener("wheel", (e) => {
   if (animating || currentView !== 'index') return;
-  if (Math.abs(e.deltaY) < 10) return; // Ignore micro-scroll thresholds
+  if (Math.abs(e.deltaY) < 10) return; 
   if (e.deltaY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
 }, { passive: true });
 
@@ -807,7 +793,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-/* ── INTUITIVE GESTURE LOGIC FOR SWIPING ── */
+/* ── REFACTORED TOUCH ROUTINES FOR DETECTING EXCLUSIVE VERTICAL SWIPES ── */
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -822,13 +808,12 @@ window.addEventListener("touchend", (e) => {
   const diffX = touchStartX - e.changedTouches[0].clientX;
   const diffY = touchStartY - e.changedTouches[0].clientY;
   
-  // Enforce explicit horizontal priority. Prevents standard vertical viewing 
-  // jitters from cross-firing the main view slide deck logic.
-  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-    if (diffX > 0) {
-      goTo(current + 1, 1); 
+  // Isolate user intention: trigger only when vertical swipe distance exceeds horizontal noise
+  if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 40) {
+    if (diffY > 0) {
+      goTo(current + 1, 1);  // Swiped up: display subsequent slide element
     } else {
-      goTo(current - 1, -1);
+      goTo(current - 1, -1); // Swiped down: display prior slide element
     }
   }
 });
