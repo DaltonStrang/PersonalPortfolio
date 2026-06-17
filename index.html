@@ -319,21 +319,34 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   .nav-links {
     gap: 16px;
   }
+  
+  /* RECONFIGURED MOBILE CARD ARCHITECTURE */
   .square-container { 
     left: 20px; 
     right: 20px; 
     bottom: 40px; 
     width: auto; 
     height: auto; 
-    aspect-ratio: 1; 
+    aspect-ratio: auto; 
     min-width: 0; 
   }
+  .square {
+    height: auto;
+  }
   .title-slide {
-    padding: 30px;
+    position: relative;
+    inset: auto;
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
   .project-title{
-    line-height:1;
+    line-height: 1.05;
+    font-size: clamp(1.8rem, 6.5vw, 2.6rem);
+    letter-spacing: -0.02em;
   }
+  
   .case-hero {
     padding: 140px 24px 40px 24px;
     height: auto;
