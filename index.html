@@ -115,10 +115,11 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   vertical-align: middle;
 }
 .slot-digit-wrap {
-  height: 1.1em;
+  height: 1em;
   overflow: hidden;
   position: relative;
   display: inline-block;
+  line-height: 1;
 }
 .slot-digit-inner {
   display: flex;
@@ -126,13 +127,15 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   position: relative;
   top: 0;
   transition: none;
+  will-change: transform;
 }
 .slot-digit-inner span {
-  height: 1.1em;
+  height: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 /* ── ROUTER ── */
@@ -169,6 +172,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   transform-style: preserve-3d;
   transition: transform 0.08s ease-out, box-shadow 0.15s ease-out;
   will-change: transform;
+  cursor: pointer;
 }
 
 /* card grain */
@@ -414,11 +418,7 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
 </button>
 
 <div id="viewRouter">
-  <div class="home-view" id="homeView">
-    <div class="square-container" id="squareContainer">
-      <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
-    </div>
-  </div>
+  <div class="home-view" id="homeView"></div>
 
   <div class="page-view" id="pageView">
     <div class="case-hero">
@@ -428,6 +428,10 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
     </div>
     <div class="case-body" id="caseBodyContent"></div>
   </div>
+</div>
+
+<div class="square-container" id="squareContainer">
+  <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
 </div>
 
 <script>
@@ -584,8 +588,8 @@ function buildSlotCounter(containerId, value) {
     }
     wrap.appendChild(inner);
     container.appendChild(wrap);
-    // set initial position
-    inner.style.transform = `translateY(-${parseInt(digit) * 1.1}em)`;
+    // position to current digit immediately (no transition)
+    inner.style.transform = `translateY(-${parseInt(digit)}em)`;
   });
 }
 function rollSlotCounter(containerId, newValue) {
@@ -597,7 +601,7 @@ function rollSlotCounter(containerId, newValue) {
     const inner = wrap.querySelector('.slot-digit-inner');
     const digit = parseInt(str[i]);
     inner.style.transition = 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
-    inner.style.transform = `translateY(-${digit * 1.1}em)`;
+    inner.style.transform = `translateY(-${digit}em)`;
     setTimeout(() => { inner.style.transition = ''; }, 600);
   });
 }
@@ -895,15 +899,74 @@ function createBG(src) {
   img.src = src; img.className = "bg-slide";
   gallery.appendChild(img); return img;
 }
+function buildCardCounter(containerEl, value) {
+  const str = String(value).padStart(2, '0');
+  containerEl.innerHTML = '';
+  str.split('').forEach(digit => {
+    const wrap = document.createElement('div');
+    wrap.className = 'slot-digit-wrap';
+    const inner = document.createElement('div');
+    inner.className = 'slot-digit-inner';
+    for (let d = 0; d <= 9; d++) {
+      const span = document.createElement('span');
+      span.textContent = d;
+      inner.appendChild(span);
+    }
+    wrap.appendChild(inner);
+    containerEl.appendChild(wrap);
+    inner.style.transform = `translateY(-${parseInt(digit)}em)`;
+  });
+}
+
+function rollCardCounter(containerEl, newValue) {
+  const str = String(newValue).padStart(2, '0');
+  const wraps = containerEl.querySelectorAll('.slot-digit-wrap');
+  wraps.forEach((wrap, i) => {
+    const inner = wrap.querySelector('.slot-digit-inner');
+    const digit = parseInt(str[i]);
+    inner.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
+    inner.style.transform = `translateY(-${digit}em)`;
+    setTimeout(() => { inner.style.transition = ''; }, 560);
+  });
+}
+
 function createTitle(index) {
   const p = projects[index];
   const wrap = document.createElement("div");
   wrap.className = "title-slide";
-  wrap.innerHTML = `
-    <div class="project-number">${String(index + 1).padStart(2, "0")} — ${String(projects.length).padStart(2, "0")}</div>
-    <h1 class="project-title">${splitWords(p.title)}</h1>
-    <div class="project-tags">${p.tags.join(" &nbsp;·&nbsp; ")}</div>
-  `;
+
+  // Build number row: slot digits — index — separator — total
+  const numRow = document.createElement('div');
+  numRow.className = 'project-number';
+  numRow.style.display = 'flex';
+  numRow.style.alignItems = 'center';
+  numRow.style.gap = '2px';
+
+  const digitHolder = document.createElement('span');
+  digitHolder.className = 'card-slot-digits';
+  digitHolder.style.display = 'inline-flex';
+  digitHolder.style.alignItems = 'center';
+  buildCardCounter(digitHolder, index + 1);
+
+  const sep = document.createElement('span');
+  sep.textContent = ` — ${String(projects.length).padStart(2, "0")}`;
+  sep.style.marginLeft = '2px';
+
+  numRow.appendChild(digitHolder);
+  numRow.appendChild(sep);
+
+  const titleEl = document.createElement('h1');
+  titleEl.className = 'project-title';
+  titleEl.innerHTML = splitWords(p.title);
+
+  const tagsEl = document.createElement('div');
+  tagsEl.className = 'project-tags';
+  tagsEl.innerHTML = p.tags.join(" &nbsp;·&nbsp; ");
+
+  wrap.appendChild(numRow);
+  wrap.appendChild(titleEl);
+  wrap.appendChild(tagsEl);
+
   square.appendChild(wrap);
   stopBreath();
   startBreath(wrap);
@@ -1014,6 +1077,10 @@ function switchView(target) {
   if (animating || currentView === target) return;
   animating = true;
   playWhoosh();
+  // Immediately hide card when leaving index
+  if (currentView === 'index') {
+    squareContainer.style.pointerEvents = 'none';
+  }
   updateNavStyles(target);
 
   const oldViewEl = currentView === 'index' ? homeView : pageView;
@@ -1042,6 +1109,12 @@ function switchView(target) {
       }
       window.scrollTo(0, 0);
       currentView = target;
+      // Show/hide the card based on target view
+      squareContainer.style.opacity = target === 'index' ? '' : '0';
+      squareContainer.style.pointerEvents = target === 'index' ? '' : 'none';
+      // Explicitly clear any inherited pointer-events block before restoring
+      newViewEl.style.pointerEvents = '';
+      newViewEl.style.visibility = '';
       gsap.set(newViewEl, { visibility: "visible", pointerEvents: "all" });
       gsap.timeline({ onComplete: () => { animating = false; setupCursorHovers(); } })
         .to(newViewEl, { opacity: 1, duration: 0.4, ease: "power2.out" })
@@ -1113,6 +1186,12 @@ function goTo(next, direction = 1) {
   const currentTitle = square.querySelector(".title-slide:last-child");
   const nextBGEl = createBG(projects[next].bg);
   const nextTitle = createTitle(next);
+
+  // Roll the card's own slot digits in slightly after the slide starts
+  setTimeout(() => {
+    const cardDigits = nextTitle.querySelector('.card-slot-digits');
+    if (cardDigits) rollCardCounter(cardDigits, next + 1);
+  }, 320);
 
   gsap.set(nextBGEl, { clipPath: direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" });
   gsap.set(nextTitle, { opacity: 0, y: direction > 0 ? 40 : -40 });
