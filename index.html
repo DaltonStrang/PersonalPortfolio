@@ -9,20 +9,32 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 100%; height: 100%; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; }
 
-body { background: #000; color: #fff; overflow-x: hidden; }
-:root { --surface:#fbfbfa; --text:#111; --muted:rgba(0,0,0,.55); }
-html { scroll-behavior: smooth; }
-::selection { background:#fff; color:#000; }
+body {
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+:root{
+  --surface:#fbfbfa;
+  --text:#111;
+  --muted:rgba(0,0,0,.55);
+}
+html{scroll-behavior:smooth;}
+::selection{background:#fff;color:#000;}
 
-a:focus-visible, button:focus-visible, .square:focus-visible {
-  outline: 3px solid #107dff; outline-offset: 4px;
+a:focus-visible, button:focus-visible, .square:focus-visible{
+ outline:3px solid #107dff;
+ outline-offset:4px;
+}
+@media (prefers-reduced-motion: reduce){
+ *{
+   animation:none !important;
+   transition:none !important;
+   scroll-behavior:auto !important;
+ }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-}
-
-/* ── CURSOR ── */
+/* ── REFINED CURSOR ── */
 #cursor {
   position: fixed;
   width: 6px; height: 6px;
@@ -30,12 +42,12 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
-  transform-origin: center center;
+  transform: translate(-50%, -50%);
   mix-blend-mode: difference;
+  transition: width .3s cubic-bezier(0.215, 0.610, 0.355, 1), height .3s cubic-bezier(0.215, 0.610, 0.355, 1);
   display: none;
-  will-change: transform, left, top;
 }
-#cursor.expanded { width: 50px; height: 50px; border-radius: 50%; }
+#cursor.expanded { width: 50px; height: 50px; }
 
 @media (hover: hover) and (pointer: fine) {
   body { cursor: none; }
@@ -50,30 +62,20 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  transform: scale(1.08);
-  transform-origin: center center;
-  will-change: transform;
+  transform: scale(1.04);
+  filter:none;
 }
-.background-gallery:after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.15));
-  pointer-events: none;
-}
-
-/* ── GRAIN OVERLAY ── */
-.grain-overlay {
-  position: fixed; inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+.background-gallery:after{
+ content:'';
+ position:absolute;
+ inset:0;
+ background:linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.15));
+ pointer-events:none;
 }
 
-/* ── NAV ── */
+/* ── TYPOGRAPHIC NAV BAR ── */
 .nav {
-  position: fixed;
+  position: fixed; 
   top: 0; left: 0; right: 0;
   height: 120px;
   display: flex; justify-content: space-between; align-items: center;
@@ -81,84 +83,49 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   z-index: 100;
   mix-blend-mode: difference;
 }
-.nav-brand-group { display: flex; flex-direction: column; gap: 4px; }
-.nav-logo { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none; }
+.nav-brand-group {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.nav-logo {
+  font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none;
+}
 .nav-email {
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.55); text-decoration: none;
-  letter-spacing: -0.01em; transition: color 0.2s; position: relative;
+  font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.55); text-decoration: none; letter-spacing: -0.01em; transition: color 0.2s;
 }
 .nav-email:hover { color: #fff; }
 
-/* email copy toast */
-.copy-toast {
-  position: fixed;
-  background: #fff; color: #000;
-  font-size: 11px; font-weight: 500;
-  padding: 5px 12px;
-  border-radius: 20px;
-  pointer-events: none;
-  z-index: 10000;
-  opacity: 0;
-  letter-spacing: -0.01em;
+.nav-center-group {
+  display: flex; align-items: center; gap: 60px;
 }
-
-.nav-center-group { display: flex; align-items: center; gap: 60px; }
-.nav-links { display: flex; gap: 40px; font-size: 15px; font-weight: 400; }
-.nav-item { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+.nav-links {
+  display: flex; gap: 40px; font-size: 15px; font-weight: 400;
+}
+.nav-item {
+  color: rgba(255, 255, 255, 0.55); text-decoration: none; transition: color 0.2s;
+}
 .nav-item:hover, .nav-item.active { color: #fff; }
 
-/* ── SLOT COUNTER ── */
-.slot-counter {
-  display: inline-flex;
-  align-items: center;
-  overflow: hidden;
-  vertical-align: middle;
-}
-.slot-digit-wrap {
-  height: 1em;
-  overflow: hidden;
+/* ── MAIN ROUTER WRAPPER ── */
+#viewRouter {
   position: relative;
-  display: inline-block;
-  line-height: 1;
-}
-.slot-digit-inner {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  top: 0;
-  transition: none;
-  will-change: transform;
-}
-.slot-digit-inner span {
-  height: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  flex-shrink: 0;
+  width: 100%;
+  z-index: 10;
 }
 
-/* ── ROUTER ── */
-#viewRouter { position: relative; width: 100%; z-index: 10; }
-
-/* ── HOME VIEW ── */
+/* ── HOME / INDEX VIEW ── */
 .home-view {
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; 
   opacity: 1; visibility: visible;
   pointer-events: all;
   touch-action: none;
 }
 
-/* ── SQUARE CARD ── */
 .square-container {
   position: fixed;
   left: 60px; bottom: 60px;
   width: 30vw; min-width: 480px;
   aspect-ratio: 1;
   z-index: 40;
-  will-change: transform;
-  transform-style: preserve-3d;
-  perspective: 800px;
 }
 
 .square {
@@ -169,22 +136,6 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   border-radius: 16px;
   box-shadow: 0 30px 120px rgba(0,0,0,.28);
   backdrop-filter: blur(10px);
-  transform-style: preserve-3d;
-  transition: transform 0.08s ease-out, box-shadow 0.15s ease-out;
-  will-change: transform;
-  cursor: pointer;
-}
-
-/* card grain */
-.square::after {
-  content: '';
-  position: absolute; inset: 0;
-  border-radius: 16px;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 5;
 }
 
 .title-slide {
@@ -201,19 +152,19 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   font-size: clamp(2.4rem, 3.2vw, 4.2rem);
   line-height: 0.95; letter-spacing: -0.04em; font-weight: 500;
 }
-.word { display: inline-block; margin-right: .18em; will-change: transform; }
+.word { display: inline-block; margin-right: .18em; }
 .project-tags {
   font-size: 14px; font-weight: 400; color: rgba(0,0,0,.45); line-height: 1.6; letter-spacing: -0.01em;
 }
 
-/* ── PAGE VIEWS ── */
+/* ── FLAT PAGE LAYOUTS ── */
 .page-view {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
   background: #fbfbfa;
   color: #000;
-  opacity: 0;
+  opacity: 0; 
   visibility: hidden;
   pointer-events: none;
 }
@@ -225,33 +176,33 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   padding: 220px 100px 80px 100px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-.case-hero .project-number { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.45); }
-.case-hero .project-title {
-  font-size: clamp(3.8rem, 6.8vw, 8rem); max-width: 85%;
-  font-weight: 500; letter-spacing: -0.03em; line-height: 1.05;
+.case-hero .project-number {
+  font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.45);
 }
-.case-hero .project-tags { font-size: 18px; font-weight: 400; color: rgba(0,0,0,.5); letter-spacing: -0.01em; }
+.case-hero .project-title {
+  font-size: clamp(3.8rem, 6.8vw, 8rem);
+  max-width: 85%;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.case-hero .project-tags {
+  font-size: 18px; font-weight: 400; color: rgba(0,0,0,.5); letter-spacing: -0.01em;
+}
 
 .case-body {
-  max-width: 1440px; margin: 0 auto;
+  max-width: 1440px;
+  margin: 0 auto;
   padding: 120px 100px 0 100px;
   display: flex; flex-direction: column; gap: 140px;
 }
 
-/* ── SCROLL REVEAL ── */
-.reveal-section {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
-}
-.reveal-section.revealed { opacity: 1; transform: none; }
-.reveal-section.delay-1 { transition-delay: 0.08s; }
-.reveal-section.delay-2 { transition-delay: 0.16s; }
-
 .editorial-intro {
   display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px; align-items: start;
 }
-.section-label { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); }
+.section-label {
+  font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35);
+}
 .case-desc {
   font-size: clamp(1.6rem, 2.2vw, 2.5rem);
   line-height: 1.45; color: rgba(0,0,0,0.85); font-weight: 400; letter-spacing: -0.02em;
@@ -262,44 +213,38 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   border-top: 1px solid rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.06);
   padding: 60px 0;
 }
-.spec-label { font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); margin-bottom: 14px; }
+.spec-label {
+  font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); margin-bottom: 14px;
+}
 .spec-value { font-size: 20px; font-weight: 400; color: rgba(0,0,0,.8); letter-spacing: -0.01em; line-height: 1.4; }
 
-.resume-container { display: flex; flex-direction: column; gap: 48px; width: 100%; }
+/* ── EXPERIENCE SECTION ── */
+.resume-container {
+  display: flex; flex-direction: column; gap: 48px; width: 100%;
+}
 .resume-row {
-  display: grid; grid-template-columns: 1.5fr 3fr 1fr; gap: 20px; padding: 24px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: grid; grid-template-columns: 1.5fr 3fr 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 .resume-row:first-child { border-top: 1px solid rgba(0,0,0,0.06); }
 .resume-org { font-size: 18px; font-weight: 500; color: #000; }
 .resume-role { font-size: 18px; font-weight: 400; color: rgba(0,0,0,0.8); }
 .resume-period { font-size: 15px; font-weight: 400; color: rgba(0,0,0,0.4); text-align: right; }
 
-/* ── IMAGE WIPE REVEAL ── */
-.case-visuals { display: flex; flex-direction: column; gap: 4px; }
-.img-container {
-  overflow: hidden;
-  position: relative;
+.case-visuals {
+  display: flex; flex-direction: column; gap: 4px;
 }
-.img-container img {
-  width: 100%; height: auto; display: block;
-  filter: grayscale(15%); transition: filter 0.5s;
-  transform: scale(1.04);
-  transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.5s;
-}
+.img-container img { width: 100%; height: auto; display: block; filter: grayscale(15%); transition: filter 0.5s; }
 .img-container img:hover { filter: grayscale(0%); }
-.img-wipe {
-  position: absolute; inset: 0;
-  background: #fbfbfa;
-  z-index: 2;
-  transform-origin: bottom;
-}
 
-.palette-section { display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px; }
+.palette-section {
+  display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px;
+}
 .palette-row { display: flex; gap: 2px; height: 44px; width: 100%; }
 .palette-swatch { flex: 1; height: 100%; }
 
-.process-section { display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px; }
+.process-section {
+  display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px;
+}
 .process-steps { display: flex; flex-direction: column; }
 .process-step {
   display: flex; gap: 60px; align-items: flex-start;
@@ -309,55 +254,40 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
 .step-num { font-size: 15px; font-weight: 500; color: rgba(0,0,0,.3); letter-spacing: -0.01em; }
 .step-text { font-size: 21px; line-height: 1.55; color: rgba(0,0,0,.75); font-weight: 400; letter-spacing: -0.015em; }
 
-/* ── FOOTER ── */
+/* ── FULL WIDTH SECURE FOOTER ── */
 .footer-nav {
-  width: 100vw; position: relative;
-  left: 50%; right: 50%;
-  margin-left: -50vw; margin-right: -50vw;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
   margin-top: 140px;
   padding: 100px 100px;
   background: #000;
-  display: flex; justify-content: space-between; align-items: center;
-  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.btn-group { display: flex; gap: 20px; }
+.btn-group {
+  display: flex;
+  gap: 20px;
+}
 .back-btn {
   font-size: 15px; font-weight: 500; background: #fff; color: #000; border: none;
   letter-spacing: -0.01em; padding: 18px 38px; border: 1px solid #fff;
-  transition: background 0.3s, color 0.3s, border-color 0.3s; cursor: pointer;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 .back-btn:hover { background: #000; color: #fff; border-color: rgba(255,255,255,0.4); }
+
 .next-btn {
-  font-size: 15px; font-weight: 500; background: transparent; color: #fff;
-  border: 1px solid rgba(255,255,255,0.25); letter-spacing: -0.01em; padding: 18px 38px;
-  transition: background 0.3s, color 0.3s, border-color 0.3s; cursor: pointer;
+  font-size: 15px; font-weight: 500; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25);
+  letter-spacing: -0.01em; padding: 18px 38px;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 .next-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
-/* ── CONFETTI CANVAS ── */
-#confetti-canvas {
-  position: absolute; inset: 0;
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* ── SOUND TOGGLE ── */
-.sound-toggle {
-  position: fixed; bottom: 28px; right: 28px;
-  z-index: 200;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background 0.2s;
-  backdrop-filter: blur(8px);
-}
-.sound-toggle:hover { background: rgba(255,255,255,0.22); }
-.sound-toggle svg { width: 14px; height: 14px; fill: #fff; opacity: 0.7; }
-.sound-toggle.muted svg.wave { display: none; }
-
-/* ── RESPONSIVE ── */
+/* ── RESPONSIVE BREAKPOINTS ── */
 @media(max-width:1024px) {
   .nav { padding: 0 30px; height: 90px; }
   .nav-center-group { gap: 30px; }
@@ -370,55 +300,103 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
   .resume-row { grid-template-columns: 1fr; gap: 8px; }
   .resume-period { text-align: left; }
 }
-@media(max-width:768px) {
-  .nav { height: auto; padding: 24px 20px; align-items: flex-start; flex-direction: row; justify-content: space-between; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
-  .nav-brand-group { gap: 2px; }
-  .nav-center-group { gap: 16px; }
-  .nav-links { gap: 16px; }
-  .square-container { left: 20px; right: 20px; bottom: 40px; width: auto; height: auto; aspect-ratio: auto; min-width: 0; }
-  .square { height: auto; }
-  .title-slide { position: relative; inset: auto; padding: 30px 24px; display: flex; flex-direction: column; gap: 20px; }
-  .project-title { line-height: 1.05; font-size: clamp(1.8rem, 6.5vw, 2.6rem); letter-spacing: -0.02em; }
-  .case-hero { padding: 140px 24px 40px 24px; height: auto; gap: 40px; }
-  .case-hero .project-title { max-width:100%; font-size:clamp(2.4rem, 9vw, 4rem); }
-  .case-body { padding: 60px 24px 0 24px; gap: 80px; }
-  .specs-grid { grid-template-columns:1fr; gap: 24px; padding: 40px 0; }
-  .footer-nav { margin-top: 80px; padding: 60px 24px; }
-  .sound-toggle { bottom: 16px; right: 16px; }
+
+@media(max-width:768px){
+  .nav{
+    height: auto;
+    padding: 24px 20px;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  }
+  .nav-brand-group {
+    gap: 2px;
+  }
+  .nav-center-group {
+    gap: 16px;
+  }
+  .nav-links {
+    gap: 16px;
+  }
+  
+  .square-container { 
+    left: 20px; 
+    right: 20px; 
+    bottom: 40px; 
+    width: auto; 
+    height: auto; 
+    aspect-ratio: auto; 
+    min-width: 0; 
+  }
+  .square {
+    height: auto;
+  }
+  .title-slide {
+    position: relative;
+    inset: auto;
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .project-title{
+    line-height: 1.05;
+    font-size: clamp(1.8rem, 6.5vw, 2.6rem);
+    letter-spacing: -0.02em;
+  }
+  
+  .case-hero {
+    padding: 140px 24px 40px 24px;
+    height: auto;
+    gap: 40px;
+  }
+  .case-hero .project-title{
+    max-width:100%;
+    font-size:clamp(2.4rem, 9vw, 4rem);
+  }
+  .case-body {
+    padding: 60px 24px 0 24px;
+    gap: 80px;
+  }
+  .specs-grid{
+    grid-template-columns:1fr;
+    gap: 24px;
+    padding: 40px 0;
+  }
+  .footer-nav {
+    margin-top: 80px;
+    padding: 60px 24px;
+  }
 }
 </style>
 </head>
 <body>
 
 <div id="cursor"></div>
-<div class="grain-overlay"></div>
 
 <div class="background-gallery"></div>
 
 <div class="nav" role="navigation" aria-label="Primary navigation">
   <div class="nav-brand-group">
     <a href="#" class="nav-logo" id="brandLogo">Dalton Strang</a>
-    <a href="mailto:hello@daltonstrang.design" class="nav-email" id="navEmail">hello@daltonstrang.design</a>
+    <a href="mailto:hello@daltonstrang.design" class="nav-email">hello@daltonstrang.design</a>
   </div>
   <div class="nav-center-group">
     <div class="nav-links">
-      <a href="#" class="nav-item active" id="navIndex">Index (<span id="indexCounter"></span>/<span id="totalIndexStr">04</span>)</a>
+      <a href="#" class="nav-item active" id="navIndex">Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)</a>
       <a href="#" class="nav-item" id="navAbout">About</a>
     </div>
   </div>
 </div>
 
-<!-- Sound toggle -->
-<button class="sound-toggle muted" id="soundToggle" aria-label="Toggle sound">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-    <path class="wave" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-    <path class="wave" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-  </svg>
-</button>
-
 <div id="viewRouter">
-  <div class="home-view" id="homeView"></div>
+  
+  <div class="home-view" id="homeView">
+    <div class="square-container" id="squareContainer">
+      <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
+    </div>
+  </div>
 
   <div class="page-view" id="pageView">
     <div class="case-hero">
@@ -428,588 +406,201 @@ a:focus-visible, button:focus-visible, .square:focus-visible {
     </div>
     <div class="case-body" id="caseBodyContent"></div>
   </div>
-</div>
-
-<div class="square-container" id="squareContainer">
-  <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
+  
 </div>
 
 <script>
-/* ═══════════════════════════════════════════
-   DATA
-═══════════════════════════════════════════ */
-const projects = [
-  {
-    title:"CobbleStone Software",
-    tags:["Brand Identity","Colour Strategy"],
-    year:"2025", client:"Palette Inc.",
-    scope:"Identity Systems · Digital Products",
-    industry:"Design Tools", duration:"14 weeks",
-    desc:"A comprehensive identity system built entirely around chromatic language — treating colour not as decoration but as primary communication. The functional framework adapts across 48 digital touchpoints cleanly.",
-    palette:["#1a1a2e","#16213e","#0f3460","#e94560","#f5f0e8"],
-    process:["Discovery & competitive audit across 120 design-tool platforms","Developed structural identity directions focusing on typographic scale","Built modular colour grammar with 5 primary + 14 secondary tokens","Delivered adaptive asset framework optimized for screens and systems"],
-    images:["https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80"],
-    bg:"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1800&q=80"
-  },
-  {
-    title:"Step",
-    tags:["Visual Architecture","Type Design"],
-    year:"2025", client:"Antithesis",
-    scope:"Identity Architecture · Bespoke Display Axis",
-    industry:"Architecture Office", duration:"22 weeks",
-    desc:"An identity built for an architectural practice that focuses on contrast: raw and refined, permanent and ephemeral. A tailored display typeface anchoring systemic grid layouts provides structural continuity.",
-    palette:["#0d0d0d","#1c1c1c","#f0ede8","#c8b89a","#8b7355"],
-    process:["Brand strategy workshops defining typographic priorities","Display type layouts: sketch concepts translated to clean vector paths","Engineered custom variable scaling rules for spatial systems","Production deployment: digital layout templates and spatial signage specs"],
-    images:["https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1400&q=80"],
-    bg:"https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1800&q=80"
-  },
-  {
-    title:"Mind Brulee",
-    tags:["Logomark Architecture","Motion Guidelines"],
-    year:"2024", client:"Monomark",
-    scope:"Mark Architecture · Interaction Mechanics",
-    industry:"Finance Platforms", duration:"10 weeks",
-    desc:"A minimalist single-stroke monogram platform developed for a specialized private market platform. Designed to scale seamlessly from 16px layouts up to spatial environments without losing structural balance.",
-    palette:["#0a0a0a","#1f1f1f","#2d4a3e","#4a9068","#e8f5e9"],
-    process:["Distilled complex identity elements into a reductive structural grammar","Constructed architectural grid boundaries based on strict design constraints","Engineered custom interaction states and dynamic transition metrics","Delivered functional specification guidelines mapping interface behavior"],
-    images:["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=1400&q=80"],
-    bg:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1800&q=80"
-  },
-  {
-    title:"Kinetic Archive",
-    tags:["Brand Systems","Editorial Direction"],
-    year:"2024", client:"Kinetic Foundation",
-    scope:"Design Tokens · Spatial Layouts · Web Architecture",
-    industry:"Arts & Culture", duration:"18 weeks",
-    desc:"An architectural identity design framework for a regional moving-image archive. Built heavily upon a flexible structural grid system that treats archival metadata with clear hierarchy and functional beauty.",
-    palette:["#f7f4ef","#e8e4dc","#c4a882","#8b6914","#2c1810"],
-    process:["Investigated historical spatial identity layouts and grid frameworks","Constructed a scalable 6-column canvas utilizing limited typographic variations","Developed structured layout models optimized across print surfaces and digital screens","Exported integrated design tokens directly into production code environments"],
-    images:["https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1558618047-f4e60cef3895?auto=format&fit=crop&w=1400&q=80"],
-    bg:"https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1800&q=80"
-  }
+const projects=[
+{
+  title:"CobbleStone Software",
+  tags:["Brand Identity","Colour Strategy"],
+  year:"2025",client:"Palette Inc.",
+  scope:"Identity Systems · Digital Products",
+  industry:"Design Tools",duration:"14 weeks",
+  desc:"A comprehensive identity system built entirely around chromatic language — treating colour not as decoration but as primary communication. The functional framework adapts across 48 digital touchpoints cleanly.",
+  palette:["#1a1a2e","#16213e","#0f3460","#e94560","#f5f0e8"],
+  process:["Discovery & competitive audit across 120 design-tool platforms","Developed structural identity directions focusing on typographic scale","Built modular colour grammar with 5 primary + 14 secondary tokens","Delivered adaptive asset framework optimized for screens and systems"],
+  images:["https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1800&q=80"
+},
+{
+  title:"Step",
+  tags:["Visual Architecture","Type Design"],
+  year:"2025",client:"Antithesis",
+  scope:"Identity Architecture · Bespoke Display Axis",
+  industry:"Architecture Office",duration:"22 weeks",
+  desc:"An identity built for an architectural practice that focuses on contrast: raw and refined, permanent and ephemeral. A tailored display typeface anchoring systemic grid layouts provides structural continuity.",
+  palette:["#0d0d0d","#1c1c1c","#f0ede8","#c8b89a","#8b7355"],
+  process:["Brand strategy workshops defining typographic priorities","Display type layouts: sketch concepts translated to clean vector paths","Engineered custom variable scaling rules for spatial systems","Production deployment: digital layout templates and spatial signage specs"],
+  images:["https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1800&q=80"
+},
+{
+  title:"Mind Brulee",
+  tags:["Logomark Architecture","Motion Guidelines"],
+  year:"2024",client:"Monomark",
+  scope:"Mark Architecture · Interaction Mechanics",
+  industry:"Finance Platforms",duration:"10 weeks",
+  desc:"A minimalist single-stroke monogram platform developed for a specialized private market platform. Designed to scale seamlessly from 16px layouts up to spatial environments without losing structural balance.",
+  palette:["#0a0a0a","#1f1f1f","#2d4a3e","#4a9068","#e8f5e9"],
+  process:["Distilled complex identity elements into a reductive structural grammar","Constructed architectural grid boundaries based on strict design constraints","Engineered custom interaction states and dynamic transition metrics","Delivered functional specification guidelines mapping interface behavior"],
+  images:["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1800&q=80"
+},
+{
+  title:"Kinetic Archive",
+  tags:["Brand Systems","Editorial Direction"],
+  year:"2024",client:"Kinetic Foundation",
+  scope:"Design Tokens · Spatial Layouts · Web Architecture",
+  industry:"Arts & Culture",duration:"18 weeks",
+  desc:"An architectural identity design framework for a regional moving-image archive. Built heavily upon a flexible structural grid system that treats archival metadata with clear hierarchy and functional beauty.",
+  palette:["#f7f4ef","#e8e4dc","#c4a882","#8b6914","#2c1810"],
+  process:["Investigated historical spatial identity layouts and grid frameworks","Constructed a scalable 6-column canvas utilizing limited typographic variations","Developed structured layout models optimized across print surfaces and digital screens","Exported integrated design tokens directly into production code environments"],
+  images:["https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1558618047-f4e60cef3895?auto=format&fit=crop&w=1400&q=80"],
+  bg:"https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1800&q=80"
+}
 ];
 
-/* ═══════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════ */
-let current = 0;
-let animating = false;
-let currentView = 'index';
-let soundEnabled = false;
-let confettiFired = false;
-let breatheRAF = null;
+let current=0;
+let animating=false;
+let currentView = 'index'; 
 
-const gallery = document.querySelector(".background-gallery");
-const squareContainer = document.getElementById("squareContainer");
-const square = document.getElementById("square");
-const homeView = document.getElementById("homeView");
-const pageView = document.getElementById("pageView");
-const cursor = document.getElementById("cursor");
+const gallery=document.querySelector(".background-gallery");
+const squareContainer=document.getElementById("squareContainer");
+const square=document.getElementById("square");
+const homeView=document.getElementById("homeView");
+const pageView=document.getElementById("pageView");
+const cursor=document.getElementById("cursor");
 
 document.getElementById("totalIndexStr").textContent = String(projects.length).padStart(2,"0");
 
-/* ═══════════════════════════════════════════
-   SOUND ENGINE
-═══════════════════════════════════════════ */
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  return audioCtx;
-}
-function playTone(freq, type, duration, gain=0.15, fadeOut=true) {
-  if (!soundEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    osc.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gainNode.gain.setValueAtTime(gain, ctx.currentTime);
-    if (fadeOut) gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + duration);
-  } catch(e) {}
-}
-function playClick() { playTone(800, 'sine', 0.08, 0.1); }
-function playWhoosh() {
-  if (!soundEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.4, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(200, ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.3);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    src.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    src.start();
-  } catch(e) {}
-}
-function playConfettiPop() {
-  if (!soundEnabled) return;
-  [600, 800, 1000, 1200].forEach((f, i) => {
-    setTimeout(() => playTone(f, 'sine', 0.15, 0.08), i * 40);
-  });
-}
+/* ── CURSOR INTERACTION ENGINE ── */
+let mx=window.innerWidth/2, my=window.innerHeight/2;
+let cx=mx, cy=my;
+let isTouchDevice = false;
 
-document.getElementById('soundToggle').addEventListener('click', () => {
-  soundEnabled = !soundEnabled;
-  document.getElementById('soundToggle').classList.toggle('muted', !soundEnabled);
-  if (soundEnabled) playClick();
-});
-
-/* ═══════════════════════════════════════════
-   SLOT COUNTER
-═══════════════════════════════════════════ */
-function buildSlotCounter(containerId, value) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const str = String(value).padStart(2, '0');
-  container.innerHTML = '';
-  str.split('').forEach(digit => {
-    const wrap = document.createElement('div');
-    wrap.className = 'slot-digit-wrap';
-    const inner = document.createElement('div');
-    inner.className = 'slot-digit-inner';
-    for (let d = 0; d <= 9; d++) {
-      const span = document.createElement('span');
-      span.textContent = d;
-      inner.appendChild(span);
-    }
-    wrap.appendChild(inner);
-    container.appendChild(wrap);
-    // position to current digit immediately (no transition)
-    inner.style.transform = `translateY(-${parseInt(digit)}em)`;
-  });
+if (window.matchMedia("(pointer: coarse)").matches) {
+  isTouchDevice = true;
 }
-function rollSlotCounter(containerId, newValue) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const str = String(newValue).padStart(2, '0');
-  const wraps = container.querySelectorAll('.slot-digit-wrap');
-  wraps.forEach((wrap, i) => {
-    const inner = wrap.querySelector('.slot-digit-inner');
-    const digit = parseInt(str[i]);
-    inner.style.transition = 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
-    inner.style.transform = `translateY(-${digit}em)`;
-    setTimeout(() => { inner.style.transition = ''; }, 600);
-  });
-}
-
-buildSlotCounter('indexCounter', 1);
-
-/* ═══════════════════════════════════════════
-   CURSOR ENGINE
-═══════════════════════════════════════════ */
-let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-let cx = mx, cy = my;
-let pvx = 0, pvy = 0;
-let isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
 if (!isTouchDevice) {
-  document.addEventListener("mousemove", (e) => { mx = e.clientX; my = e.clientY; });
-  (function animCursor() {
-    const dx = mx - cx, dy = my - cy;
-    cx += dx * 0.12; cy += dy * 0.12;
-
-    // velocity-based stretch
-    const speed = Math.sqrt(dx * dx + dy * dy);
-    const angle = Math.atan2(dy, dx);
-    const stretch = 1 + speed * 0.045;
-    const squeeze = 1 / stretch;
-
-    const isExpanded = cursor.classList.contains('expanded');
-    if (!isExpanded) {
-      cursor.style.left = cx + "px";
-      cursor.style.top = cy + "px";
-      cursor.style.width = (6 * stretch) + "px";
-      cursor.style.height = (6 * squeeze) + "px";
-      cursor.style.borderRadius = stretch > 1.3 ? '40%' : '50%';
-      cursor.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
-    } else {
-      cursor.style.left = cx + "px";
-      cursor.style.top = cy + "px";
-      cursor.style.transform = `translate(-50%, -50%)`;
-      cursor.style.width = '50px';
-      cursor.style.height = '50px';
-      cursor.style.borderRadius = '50%';
-    }
-    pvx = dx; pvy = dy;
+  document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
+  (function animCursor(){
+    cx+=(mx-cx)*.12; cy+=(my-cy)*.12;
+    cursor.style.left=cx+"px"; cursor.style.top=cy+"px";
     requestAnimationFrame(animCursor);
   })();
 }
 
 function setupCursorHovers() {
   if (isTouchDevice) return;
-  const elements = [square, document.getElementById("navAbout"), document.getElementById("navIndex"), document.getElementById("brandLogo"), document.getElementById("navEmail")];
+  const elements = [
+    square, 
+    document.getElementById("navAbout"), 
+    document.getElementById("navIndex"), 
+    document.getElementById("brandLogo")
+  ];
   elements.forEach(el => {
-    if (!el) return;
-    el.addEventListener("mouseenter", () => cursor.classList.add("expanded"));
-    el.addEventListener("mouseleave", () => cursor.classList.remove("expanded"));
+    if(!el) return;
+    el.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
+    el.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
   });
 }
 
 function bindDynamicButtons() {
   const backBtn = document.getElementById("caseBackBtn");
   const nextBtn = document.getElementById("caseNextBtn");
-  if (!isTouchDevice) {
-    [backBtn, nextBtn].filter(Boolean).forEach(btn => {
-      btn.addEventListener("mouseenter", () => cursor.classList.add("expanded"));
-      btn.addEventListener("mouseleave", () => cursor.classList.remove("expanded"));
-    });
-  }
-  if (backBtn) backBtn.addEventListener("click", (e) => { e.preventDefault(); playClick(); switchView('index'); });
-  if (nextBtn) nextBtn.addEventListener("click", (e) => { e.preventDefault(); playClick(); navigateNextProject(); });
-}
-
-/* ═══════════════════════════════════════════
-   CARD MAGNETIC TILT
-═══════════════════════════════════════════ */
-let tiltRAF = null;
-let targetRX = 0, targetRY = 0, currentRX = 0, currentRY = 0;
-
-function startCardTilt() {
-  if (isTouchDevice) return;
-  squareContainer.addEventListener('mousemove', onTiltMove);
-  squareContainer.addEventListener('mouseleave', onTiltLeave);
-}
-
-function onTiltMove(e) {
-  const r = squareContainer.getBoundingClientRect();
-  const x = (e.clientX - r.left) / r.width - 0.5;
-  const y = (e.clientY - r.top) / r.height - 0.5;
-  targetRY = x * 14;
-  targetRX = -y * 14;
-  square.style.boxShadow = `
-    ${-x * 30}px ${-y * 20}px 80px rgba(0,0,0,0.35),
-    ${-x * 5}px ${-y * 5}px 20px rgba(0,0,0,0.2)
-  `;
-}
-
-function onTiltLeave() {
-  targetRX = 0; targetRY = 0;
-  square.style.boxShadow = '0 30px 120px rgba(0,0,0,.28)';
-}
-
-(function tiltLoop() {
-  currentRX += (targetRX - currentRX) * 0.1;
-  currentRY += (targetRY - currentRY) * 0.1;
-  if (Math.abs(currentRX) > 0.01 || Math.abs(currentRY) > 0.01 || targetRX !== 0 || targetRY !== 0) {
-    square.style.transform = `perspective(800px) rotateX(${currentRX}deg) rotateY(${currentRY}deg)`;
-  }
-  requestAnimationFrame(tiltLoop);
-})();
-
-startCardTilt();
-
-/* ═══════════════════════════════════════════
-   PARALLAX BG
-═══════════════════════════════════════════ */
-let bgParallaxX = 0, bgParallaxY = 0;
-let targetParallaxX = 0, targetParallaxY = 0;
-
-if (!isTouchDevice) {
-  document.addEventListener('mousemove', (e) => {
-    if (currentView !== 'index') return;
-    targetParallaxX = (e.clientX / window.innerWidth - 0.5) * -28;
-    targetParallaxY = (e.clientY / window.innerHeight - 0.5) * -18;
-  });
-}
-(function parallaxLoop() {
-  bgParallaxX += (targetParallaxX - bgParallaxX) * 0.06;
-  bgParallaxY += (targetParallaxY - bgParallaxY) * 0.06;
-  const bg = gallery.querySelector('.bg-slide:last-child');
-  if (bg && currentView === 'index') {
-    bg.style.transform = `scale(1.08) translate(${bgParallaxX}px, ${bgParallaxY}px)`;
-  }
-  requestAnimationFrame(parallaxLoop);
-})();
-
-/* ═══════════════════════════════════════════
-   IDLE BREATH
-═══════════════════════════════════════════ */
-let breatheT = 0;
-let breatheActive = false;
-
-function startBreath(titleSlide) {
-  breatheActive = true;
-  const words = [...titleSlide.querySelectorAll('.word')];
-  function tick() {
-    if (!breatheActive) return;
-    breatheT += 0.006;
-    words.forEach((w, i) => {
-      w.style.transform = `translateY(${Math.sin(breatheT + i * 0.9) * 1.8}px)`;
-    });
-    breatheRAF = requestAnimationFrame(tick);
-  }
-  tick();
-}
-
-function stopBreath() {
-  breatheActive = false;
-  if (breatheRAF) cancelAnimationFrame(breatheRAF);
-}
-
-/* ═══════════════════════════════════════════
-   EMAIL COPY TOAST
-═══════════════════════════════════════════ */
-let emailCopyTimer = null;
-const navEmail = document.getElementById('navEmail');
-const EMAIL = 'hello@daltonstrang.design';
-
-navEmail.addEventListener('mouseenter', () => {
-  emailCopyTimer = setTimeout(() => {
-    if (navigator.clipboard) navigator.clipboard.writeText(EMAIL).catch(()=>{});
-    showCopyToast();
-  }, 1500);
-});
-navEmail.addEventListener('mouseleave', () => clearTimeout(emailCopyTimer));
-navEmail.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (navigator.clipboard) navigator.clipboard.writeText(EMAIL).catch(()=>{});
-  showCopyToast();
-});
-
-function showCopyToast() {
-  const rect = navEmail.getBoundingClientRect();
-  const toast = document.createElement('div');
-  toast.className = 'copy-toast';
-  toast.textContent = 'Copied!';
-  toast.style.left = rect.left + 'px';
-  toast.style.top = (rect.bottom + 8) + 'px';
-  document.body.appendChild(toast);
-  gsap.timeline({onComplete: () => toast.remove()})
-    .to(toast, { opacity: 1, y: -4, duration: 0.2, ease: 'power2.out' })
-    .to(toast, { opacity: 0, y: -18, duration: 0.5, ease: 'power2.in', delay: 0.8 });
-  playClick();
-}
-
-/* ═══════════════════════════════════════════
-   CONFETTI
-═══════════════════════════════════════════ */
-function fireConfetti(canvas) {
-  if (confettiFired) return;
-  confettiFired = true;
-  playConfettiPop();
-
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-
-  const colors = ['#e94560','#f5f0e8','#4a9068','#c8b89a','#8b6914','#1D9E75','#534AB7','#fff'];
-  const particles = Array.from({ length: 72 }, () => ({
-    x: canvas.width * 0.25,
-    y: canvas.height * 0.5,
-    vx: (Math.random() - 0.5) * 18,
-    vy: (Math.random() - 1.2) * 16,
-    color: colors[Math.floor(Math.random() * colors.length)],
-    size: Math.random() * 5 + 3,
-    rotation: Math.random() * Math.PI * 2,
-    rotSpeed: (Math.random() - 0.5) * 0.3,
-    life: 1,
-    decay: Math.random() * 0.015 + 0.012
-  }));
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let alive = false;
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.45;
-      p.vx *= 0.98;
-      p.rotation += p.rotSpeed;
-      p.life -= p.decay;
-      if (p.life > 0) {
-        alive = true;
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.life);
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-        ctx.restore();
-      }
-    });
-    if (alive) requestAnimationFrame(draw);
-    else ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  draw();
-}
-
-/* ═══════════════════════════════════════════
-   SCROLL REVEAL — INTERSECTIONOBSERVER
-═══════════════════════════════════════════ */
-let revealObserver = null;
-
-function setupScrollReveals() {
-  if (revealObserver) revealObserver.disconnect();
-  revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        // image wipe
-        const wipes = entry.target.querySelectorAll('.img-wipe');
-        wipes.forEach((wipe, i) => {
-          setTimeout(() => {
-            gsap.to(wipe, { scaleY: 0, duration: 0.8, ease: 'power4.inOut', transformOrigin: 'top' });
-            const img = wipe.nextElementSibling;
-            if (img) gsap.to(img, { scale: 1, duration: 0.9, ease: 'power3.out', delay: 0.1 });
-          }, i * 120);
-        });
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-
-  document.querySelectorAll('.reveal-section').forEach(el => revealObserver.observe(el));
   
-  // confetti trigger on footer
-  const footer = document.querySelector('.footer-nav');
-  const canvas = document.getElementById('confetti-canvas');
-  if (footer && canvas) {
-    const footerObs = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        fireConfetti(canvas);
-        footerObs.disconnect();
-      }
-    }, { threshold: 0.4 });
-    footerObs.observe(footer);
+  if(!isTouchDevice) {
+    [backBtn, nextBtn].forEach(btn => {
+      if(!btn) return;
+      btn.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
+      btn.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
+    });
   }
+
+  if(backBtn) backBtn.addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+  if(nextBtn) nextBtn.addEventListener("click", (e) => { e.preventDefault(); navigateNextProject(); });
 }
 
-/* ═══════════════════════════════════════════
-   DOM GENERATORS
-═══════════════════════════════════════════ */
-function splitWords(text) {
-  return text.split(" ").map(w => `<span class="word">${w}</span>`).join(" ");
+/* ── DOM GENERATORS ── */
+function splitWords(text){
+  return text.split(" ").map(w=>`<span class="word">${w}</span>`).join(" ");
 }
-function createBG(src) {
-  const img = document.createElement("img");
-  img.src = src; img.className = "bg-slide";
+function createBG(src){
+  const img=document.createElement("img");
+  img.src=src; img.className="bg-slide";
   gallery.appendChild(img); return img;
 }
-function buildCardCounter(containerEl, value) {
-  const str = String(value).padStart(2, '0');
-  containerEl.innerHTML = '';
-  str.split('').forEach(digit => {
-    const wrap = document.createElement('div');
-    wrap.className = 'slot-digit-wrap';
-    const inner = document.createElement('div');
-    inner.className = 'slot-digit-inner';
-    for (let d = 0; d <= 9; d++) {
-      const span = document.createElement('span');
-      span.textContent = d;
-      inner.appendChild(span);
-    }
-    wrap.appendChild(inner);
-    containerEl.appendChild(wrap);
-    inner.style.transform = `translateY(-${parseInt(digit)}em)`;
-  });
-}
-
-function rollCardCounter(containerEl, newValue) {
-  const str = String(newValue).padStart(2, '0');
-  const wraps = containerEl.querySelectorAll('.slot-digit-wrap');
-  wraps.forEach((wrap, i) => {
-    const inner = wrap.querySelector('.slot-digit-inner');
-    const digit = parseInt(str[i]);
-    inner.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
-    inner.style.transform = `translateY(-${digit}em)`;
-    setTimeout(() => { inner.style.transition = ''; }, 560);
-  });
-}
-
-function createTitle(index) {
-  const p = projects[index];
-  const wrap = document.createElement("div");
-  wrap.className = "title-slide";
-
-  // Build number row: slot digits — index — separator — total
-  const numRow = document.createElement('div');
-  numRow.className = 'project-number';
-  numRow.style.display = 'flex';
-  numRow.style.alignItems = 'center';
-  numRow.style.gap = '2px';
-
-  const digitHolder = document.createElement('span');
-  digitHolder.className = 'card-slot-digits';
-  digitHolder.style.display = 'inline-flex';
-  digitHolder.style.alignItems = 'center';
-  buildCardCounter(digitHolder, index + 1);
-
-  const sep = document.createElement('span');
-  sep.textContent = ` — ${String(projects.length).padStart(2, "0")}`;
-  sep.style.marginLeft = '2px';
-
-  numRow.appendChild(digitHolder);
-  numRow.appendChild(sep);
-
-  const titleEl = document.createElement('h1');
-  titleEl.className = 'project-title';
-  titleEl.innerHTML = splitWords(p.title);
-
-  const tagsEl = document.createElement('div');
-  tagsEl.className = 'project-tags';
-  tagsEl.innerHTML = p.tags.join(" &nbsp;·&nbsp; ");
-
-  wrap.appendChild(numRow);
-  wrap.appendChild(titleEl);
-  wrap.appendChild(tagsEl);
-
-  square.appendChild(wrap);
-  stopBreath();
-  startBreath(wrap);
-  return wrap;
+function createTitle(index){
+  const p=projects[index];
+  const wrap=document.createElement("div");
+  wrap.className="title-slide";
+  wrap.innerHTML=`
+    <div class="project-number">${String(index+1).padStart(2,"0")} — ${String(projects.length).padStart(2,"0")}</div>
+    <h1 class="project-title">${splitWords(p.title)}</h1>
+    <div class="project-tags">${p.tags.join(" &nbsp;·&nbsp; ")}</div>
+  `;
+  square.appendChild(wrap); return wrap;
 }
 
 createBG(projects[0].bg);
 createTitle(0);
 setupCursorHovers();
 
-/* ═══════════════════════════════════════════
-   HTML GENERATOR
-═══════════════════════════════════════════ */
+/* ── GRAPHIC LAYOUT GENERATOR ── */
 function generateViewHTML(target) {
-  if (target === 'about') {
+  if(target === 'about') {
     return `
-      <div class="editorial-intro reveal-section">
-        <div class="section-label">Profile</div>
-        <p class="case-desc">Philadelphia-based product designer, front-end engineer, and independent collaborator building high-utility interactive spaces. Aligning with functional Swiss design methodology, my practice weights absolute grid logic, geometric containment, and deliberate typographic hierarchy.</p>
+      <div class="editorial-intro">
+        <div class="section-label">Profile</div><div style="margin-bottom:24px;font-size:14px;color:rgba(0,0,0,.45)">Designer • Front‑End Developer • Design Systems Specialist</div>
+        <p class="case-desc">Philadelphia-based product designer, front-end engineer, and independent collaborator building high-utility interactive spaces. Aligning strictly with functional Swiss design methodology, my methodology weights absolute grid logic, geometric containment, and deliberate typographic hierarchy to optimize product utility and structural value.</p>
       </div>
-      <div class="specs-grid reveal-section delay-1">
+      <div class="specs-grid">
         <div><div class="spec-label">Core Engineering</div><div class="spec-value">Interface Engineering<br>Design Systems UI<br>JavaScript & Python</div></div>
         <div><div class="spec-label">Availability</div><div class="spec-value">Open for Contracts<br>Contract Rate: $50 / hr</div></div>
         <div><div class="spec-label">Location Base</div><div class="spec-value">Philadelphia, PA<br>Remote / Hybrid Available</div></div>
         <div><div class="spec-label">Direct Line</div><div class="spec-value">hello@daltonstrang.design</div></div>
       </div>
-      <div class="editorial-intro reveal-section">
+      
+      <div class="editorial-intro">
         <div class="section-label">Experience</div>
         <div class="resume-container">
-          <div class="resume-row"><div class="resume-org">Independent Practice</div><div class="resume-role">Freelance Designer & Front-End Engineer<br>Developing systematic code-driven UI frameworks, bespoke application architecture, and production-ready visual systems.</div><div class="resume-period">2024 — Pres.</div></div>
-          <div class="resume-row"><div class="resume-org">PhillyJS</div><div class="resume-role">Organizer / Primary Logistics Contact<br>Directing scheduling, community outreach, event automation, and sponsor logistics for the Philadelphia JavaScript Club.</div><div class="resume-period">2025 — Pres.</div></div>
-          <div class="resume-row"><div class="resume-org">CobbleStone Software</div><div class="resume-role">UI Designer & Front-End Developer<br>Architecting system modules, multi-variant web experiences, and interaction logic within enterprise product boundaries.</div><div class="resume-period">2023 — 2025</div></div>
+          <div class="resume-row">
+            <div class="resume-org">Independent Practice</div>
+            <div class="resume-role">Freelance Designer & Front-End Engineer<br>Developing systematic code-driven UI frameworks, bespoke application architecture, and production-ready visual systems for commercial clients.</div>
+            <div class="resume-period">2024 — Pres.</div>
+          </div>
+          <div class="resume-row">
+            <div class="resume-org">PhillyJS</div>
+            <div class="resume-role">Organizer / Primary Logistics Contact<br>Directing scheduling parameters, community outreach coordination, event automation engineering, and sponsor logistics for the Philadelphia JavaScript Club ecosystem.</div>
+            <div class="resume-period">2025 — Pres.</div>
+          </div>
+          <div class="resume-row">
+            <div class="resume-org">CobbleStone Software</div>
+            <div class="resume-role">UI Designer & Front-End Developer<br>Architecting targeted system modules, multi-variant web experiences, application assets, and interaction logic sets within enterprise product boundaries.</div>
+            <div class="resume-period">2023 — 2025</div>
+          </div>
         </div>
       </div>
-      <div class="editorial-intro reveal-section">
+
+      <div class="editorial-intro">
         <div class="section-label">Technical Competencies</div>
         <div class="resume-container">
-          <div class="resume-row"><div class="resume-org">Design & Layout</div><div class="resume-role">Swiss Grid Typography, Scale Architectures, Modular Design Tokens, Corporate Identity Layouts, Token Export Pipelines</div><div class="resume-period">Expertise</div></div>
-          <div class="resume-row"><div class="resume-org">Development Axis</div><div class="resume-role">HTML5/CSS3 Core, Modern Vanilla JavaScript (ES6+), State Management UI, Git/Version Automation, Python Scripts</div><div class="resume-period">Expertise</div></div>
+          <div class="resume-row">
+            <div class="resume-org">Design & Layout</div>
+            <div class="resume-role">Swiss Grid Typography, Scale Architectures, Modular Design Tokens, Corporate Identity Layouts, Design Token Export Pipelines</div>
+            <div class="resume-period">Expertise</div>
+          </div>
+          <div class="resume-row">
+            <div class="resume-org">Development Axis</div>
+            <div class="resume-role">HTML5/CSS3 Core, Modern Vanilla JavaScript (ES6+), State Management UI, Git/Version Automation, Python Automation Scripts</div>
+            <div class="resume-period">Expertise</div>
+          </div>
         </div>
       </div>
-      <div class="footer-nav" style="position:relative;">
-        <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
+
+      <div class="footer-nav">
         <button class="back-btn" id="caseBackBtn">Return to Index</button>
         <div></div>
       </div>
@@ -1018,42 +609,36 @@ function generateViewHTML(target) {
     const p = projects[current];
     const nextIndex = (current + 1) % projects.length;
     const nextProjectTitle = projects[nextIndex].title;
+
     return `
-      <div class="editorial-intro reveal-section">
+      <div class="editorial-intro">
         <div class="section-label">Case Analysis</div>
         <p class="case-desc">${p.desc}</p>
       </div>
-      <div class="specs-grid reveal-section delay-1">
+      <div class="specs-grid">
         <div><div class="spec-label">Scope</div><div class="spec-value">${p.scope}</div></div>
         <div><div class="spec-label">Client</div><div class="spec-value">${p.client}</div></div>
         <div><div class="spec-label">Duration</div><div class="spec-value">${p.duration}</div></div>
         <div><div class="spec-label">Timeline</div><div class="spec-value">${p.year}</div></div>
       </div>
-      <div class="case-visuals reveal-section">
-        <div class="img-container">
-          <div class="img-wipe"></div>
-          <img src="${p.images[0]}" alt="Project showcase image">
-        </div>
-        <div class="img-container" style="margin-top:4px;">
-          <div class="img-wipe"></div>
-          <img src="${p.images[1]}" alt="Project showcase image">
-        </div>
+      <div class="case-visuals">
+        <div class="img-container"><img src="${p.images[0]}" alt="Project showcase image"></div>
+        <div class="img-container"><img src="${p.images[1]}" alt="Project showcase image"></div>
       </div>
-      <div class="palette-section reveal-section">
+      <div class="palette-section">
         <div class="section-label">System Swatches</div>
-        <div class="palette-row">${p.palette.map(c => `<div class="palette-swatch" style="background:${c}"></div>`).join("")}</div>
+        <div class="palette-row">${p.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join("")}</div>
       </div>
-      <div class="process-section reveal-section">
+      <div class="process-section">
         <div class="section-label">Implementation Steps</div>
-        <div class="process-steps">${p.process.map((s, i) => `
+        <div class="process-steps">${p.process.map((s,i)=>`
           <div class="process-step">
-            <div class="step-num">${String(i + 1).padStart(2, "0")}</div>
+            <div class="step-num">${String(i+1).padStart(2,"0")}</div>
             <div class="step-text">${s}</div>
           </div>`).join("")}
         </div>
       </div>
-      <div class="footer-nav" style="position:relative;">
-        <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
+      <div class="footer-nav">
         <button class="back-btn" id="caseBackBtn">Return to Index</button>
         <div class="btn-group">
           <button class="next-btn" id="caseNextBtn">Next: ${nextProjectTitle}</button>
@@ -1066,21 +651,19 @@ function generateViewHTML(target) {
 function updateNavStyles(targetView) {
   document.getElementById("navIndex").classList.remove("active");
   document.getElementById("navAbout").classList.remove("active");
-  if (targetView === 'index') document.getElementById("navIndex").classList.add("active");
-  else if (targetView === 'about') document.getElementById("navAbout").classList.add("active");
+  
+  if (targetView === 'index') {
+    document.getElementById("navIndex").classList.add("active");
+  } else if (targetView === 'about') {
+    document.getElementById("navAbout").classList.add("active");
+  }
 }
 
-/* ═══════════════════════════════════════════
-   VIEW ROUTER
-═══════════════════════════════════════════ */
+/* ── ARCHITECTURAL VIEW ROUTER ── */
 function switchView(target) {
   if (animating || currentView === target) return;
   animating = true;
-  playWhoosh();
-  // Immediately hide card when leaving index
-  if (currentView === 'index') {
-    squareContainer.style.pointerEvents = 'none';
-  }
+
   updateNavStyles(target);
 
   const oldViewEl = currentView === 'index' ? homeView : pageView;
@@ -1089,6 +672,7 @@ function switchView(target) {
   const tl = gsap.timeline({
     onComplete: () => {
       gsap.set(oldViewEl, { visibility: "hidden", pointerEvents: "none" });
+      
       if (target !== 'index') {
         if (target === 'about') {
           document.getElementById("caseOverline").textContent = "Dalton Strang";
@@ -1101,45 +685,39 @@ function switchView(target) {
           document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
         }
         document.getElementById("caseBodyContent").innerHTML = generateViewHTML(target);
-        confettiFired = false;
         bindDynamicButtons();
-        setupScrollReveals();
-      } else {
-        targetParallaxX = 0; targetParallaxY = 0;
       }
+
       window.scrollTo(0, 0);
       currentView = target;
-      // Show/hide the card based on target view
-      squareContainer.style.opacity = target === 'index' ? '' : '0';
-      squareContainer.style.pointerEvents = target === 'index' ? '' : 'none';
-      // Explicitly clear any inherited pointer-events block before restoring
-      newViewEl.style.pointerEvents = '';
-      newViewEl.style.visibility = '';
+
       gsap.set(newViewEl, { visibility: "visible", pointerEvents: "all" });
-      gsap.timeline({ onComplete: () => { animating = false; setupCursorHovers(); } })
-        .to(newViewEl, { opacity: 1, duration: 0.4, ease: "power2.out" })
-        .fromTo(
-          target === 'index' ? ".square-container" : [".case-hero", ".case-body"],
-          { y: 18 }, { y: 0, duration: 0.55, ease: "power3.out" }, 0
-        );
+      
+      gsap.timeline({
+        onComplete: () => { animating = false; setupCursorHovers(); }
+      })
+      .to(newViewEl, { opacity: 1, duration: 0.4, ease: "power2.out" })
+      .fromTo(target === 'index' ? ".square-container" : [".case-hero", ".case-body"], 
+        { y: 15 }, { y: 0, duration: 0.5, ease: "power3.out" }, 0
+      );
     }
   });
+
   tl.to(oldViewEl, { opacity: 0, duration: 0.3, ease: "power2.inOut" });
 }
 
-/* ═══════════════════════════════════════════
-   CASE-TO-CASE NAVIGATE
-═══════════════════════════════════════════ */
+/* ── SEAMLESS CASE-TO-CASE NAVIGATION ── */
 function navigateNextProject() {
   if (animating) return;
   animating = true;
-  playWhoosh();
 
-  let next = (current + 1) % projects.length;
-  rollSlotCounter('indexCounter', next + 1);
+  let next = current + 1;
+  if (next >= projects.length) next = 0;
 
+  document.getElementById("currentIndexStr").textContent = String(next+1).padStart(2,"0");
   const currentBG = gallery.querySelector(".bg-slide:last-child");
   const nextBG = createBG(projects[next].bg);
+  
   gsap.set(nextBG, { clipPath: "inset(100% 0 0 0)" });
 
   square.innerHTML = "";
@@ -1148,7 +726,7 @@ function navigateNextProject() {
   const tl = gsap.timeline({
     onComplete: () => {
       currentBG.remove();
-      const titleEl = createTitle(next);
+      createTitle(next);
       animating = false;
     }
   });
@@ -1156,105 +734,113 @@ function navigateNextProject() {
   tl.to(pageView, { opacity: 0, y: -20, duration: 0.25, ease: "power2.in" });
   tl.to(nextBG, { clipPath: "inset(0% 0 0 0%)", duration: 0.65, ease: "power3.inOut" }, 0);
   tl.call(() => {
-    document.getElementById("caseBodyContent").innerHTML = "";
+    document.getElementById("caseBodyContent").innerHTML = ""; 
     const p = projects[current];
     document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
     document.getElementById("caseTitle").textContent = p.title;
     document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
     document.getElementById("caseBodyContent").innerHTML = generateViewHTML('project');
-    confettiFired = false;
     bindDynamicButtons();
-    setupScrollReveals();
     window.scrollTo(0, 0);
   }, null, 0.25);
   tl.to(pageView, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.28);
 }
 
-/* ═══════════════════════════════════════════
-   SLIDE ENGINE
-═══════════════════════════════════════════ */
-function goTo(next, direction = 1) {
-  if (animating || currentView !== 'index') return;
-  if (next < 0) next = projects.length - 1;
-  if (next >= projects.length) next = 0;
+/* ── CORE COMPONENT CONTROLLER LINKS ── */
+square.addEventListener("click", () => switchView('project'));
+
+square.addEventListener("keydown",(e)=>{
+ if(e.key==="Enter" || e.key===" "){
+   e.preventDefault();
+   switchView('project');
+ }
+});
+
+document.getElementById("navAbout").addEventListener("click", (e) => { e.preventDefault(); switchView('about'); });
+document.getElementById("navIndex").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+document.getElementById("brandLogo").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+
+/* ── REFINED SLIDE ENGINE ── */
+function goTo(next, direction=1){
+  if(animating || currentView !== 'index') return;
+  if(next < 0) next = projects.length - 1;
+  if(next >= projects.length) next = 0;
   animating = true;
-  playWhoosh();
 
-  rollSlotCounter('indexCounter', next + 1);
+  document.getElementById("currentIndexStr").textContent = String(next+1).padStart(2,"0");
 
-  const currentBGEl = gallery.querySelector(".bg-slide:last-child");
+  const currentBG = gallery.querySelector(".bg-slide:last-child");
   const currentTitle = square.querySelector(".title-slide:last-child");
-  const nextBGEl = createBG(projects[next].bg);
+
+  const nextBG = createBG(projects[next].bg);
   const nextTitle = createTitle(next);
 
-  // Roll the card's own slot digits in slightly after the slide starts
-  setTimeout(() => {
-    const cardDigits = nextTitle.querySelector('.card-slot-digits');
-    if (cardDigits) rollCardCounter(cardDigits, next + 1);
-  }, 320);
-
-  gsap.set(nextBGEl, { clipPath: direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" });
+  gsap.set(nextBG, { clipPath: direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" });
   gsap.set(nextTitle, { opacity: 0, y: direction > 0 ? 40 : -40 });
 
   const words = nextTitle.querySelectorAll(".word");
   const tl = gsap.timeline({
-    onComplete() {
-      currentBGEl.remove();
+    onComplete(){
+      currentBG.remove();
       currentTitle.remove();
       current = next;
       animating = false;
     }
   });
 
-  tl.to(nextBGEl, { clipPath: "inset(0% 0 0 0)", duration: 1.0, ease: "power4.inOut" }, 0);
+  tl.to(nextBG, { clipPath: "inset(0% 0 0 0)", duration: 1.0, ease: "power4.inOut" }, 0);
+  
+  /* BYPASS SCALEY TRANSFORMS ON MOBILE VIEWPORTS TO ELIMINATE REFLOW JUMPINESS */
   if (window.innerWidth > 768) {
     tl.to(squareContainer, { scaleY: 1.01, duration: 0.25, ease: "power2.out" }, 0);
     tl.to(squareContainer, { scaleY: 1, duration: 0.4, ease: "power4.out" }, 0.25);
   }
+
   tl.to(currentTitle, { y: direction > 0 ? -40 : 40, opacity: 0, duration: 0.45, ease: "power3.in" }, 0);
   tl.to(nextTitle, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
-  tl.fromTo(words, { y: 24, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.025, duration: 0.5, ease: "power4.out" }, 0.32);
+  tl.fromTo(words, { y: 24, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.02, duration: 0.5, ease: "power4.out" }, 0.32);
 }
 
-/* ═══════════════════════════════════════════
-   EVENT BINDINGS
-═══════════════════════════════════════════ */
-square.addEventListener("click", () => { playClick(); switchView('project'); });
-square.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); playClick(); switchView('project'); }
-});
-document.getElementById("navAbout").addEventListener("click", (e) => { e.preventDefault(); playClick(); switchView('about'); });
-document.getElementById("navIndex").addEventListener("click", (e) => { e.preventDefault(); playClick(); switchView('index'); });
-document.getElementById("brandLogo").addEventListener("click", (e) => { e.preventDefault(); playClick(); switchView('index'); });
-
+/* ── EVENT ROUTERS ── */
 window.addEventListener("wheel", (e) => {
   if (animating || currentView !== 'index') return;
-  if (Math.abs(e.deltaY) < 10) return;
+  if (Math.abs(e.deltaY) < 10) return; 
   if (e.deltaY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
 }, { passive: true });
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && currentView !== 'index') { switchView('index'); return; }
-  if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-    if (currentView === 'project') navigateNextProject();
-    else if (currentView === 'index') goTo(current + 1, 1);
+  
+  if (e.key === "ArrowDown" || e.key === "ArrowRight") { 
+    if(currentView === 'project') navigateNextProject(); 
+    else if(currentView === 'index') goTo(current + 1, 1); 
   }
-  if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-    if (currentView === 'index') goTo(current - 1, -1);
+  if (e.key === "ArrowUp" || e.key === "ArrowLeft") { 
+    if(currentView === 'index') goTo(current - 1, -1); 
   }
 });
 
-let touchStartX = 0, touchStartY = 0;
-window.addEventListener("touchstart", (e) => {
-  touchStartX = e.touches[0].clientX;
+/* ── REFACTORED TOUCH ROUTINES FOR DETECTING EXCLUSIVE VERTICAL SWIPES ── */
+let touchStartX = 0;
+let touchStartY = 0;
+
+window.addEventListener("touchstart", (e) => { 
+  touchStartX = e.touches[0].clientX; 
   touchStartY = e.touches[0].clientY;
 }, { passive: true });
+
 window.addEventListener("touchend", (e) => {
   if (currentView !== 'index' || animating) return;
+  
   const diffX = touchStartX - e.changedTouches[0].clientX;
   const diffY = touchStartY - e.changedTouches[0].clientY;
+  
   if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 40) {
-    if (diffY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
+    if (diffY > 0) {
+      goTo(current + 1, 1);  
+    } else {
+      goTo(current - 1, -1); 
+    }
   }
 });
 </script>
