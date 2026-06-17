@@ -320,7 +320,6 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
     gap: 16px;
   }
   
-  /* RECONFIGURED MOBILE CARD ARCHITECTURE */
   .square-container { 
     left: 20px; 
     right: 20px; 
@@ -790,8 +789,12 @@ function goTo(next, direction=1){
   });
 
   tl.to(nextBG, { clipPath: "inset(0% 0 0 0)", duration: 1.0, ease: "power4.inOut" }, 0);
-  tl.to(squareContainer, { scaleY: 1.01, duration: 0.25, ease: "power2.out" }, 0);
-  tl.to(squareContainer, { scaleY: 1, duration: 0.4, ease: "power4.out" }, 0.25);
+  
+  /* BYPASS SCALEY TRANSFORMS ON MOBILE VIEWPORTS TO ELIMINATE REFLOW JUMPINESS */
+  if (window.innerWidth > 768) {
+    tl.to(squareContainer, { scaleY: 1.01, duration: 0.25, ease: "power2.out" }, 0);
+    tl.to(squareContainer, { scaleY: 1, duration: 0.4, ease: "power4.out" }, 0.25);
+  }
 
   tl.to(currentTitle, { y: direction > 0 ? -40 : 40, opacity: 0, duration: 0.45, ease: "power3.in" }, 0);
   tl.to(nextTitle, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
