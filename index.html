@@ -120,15 +120,15 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .nav-item { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
 .nav-item:hover, .nav-item.active { color: #fff; }
 
-/* ── STICKY BACK NAV (case study context) ── */
+/* ── STICKY READING BAR (case study context) ── */
 #stickyBack {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  bottom: 0; left: 0; right: 0;
   height: 60px;
   background: rgba(251,251,250,0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid rgba(0,0,0,0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -136,7 +136,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
   z-index: 200;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-100%);
+  transform: translateY(100%);
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 #stickyBack.visible {
@@ -360,7 +360,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
   left: 50%; right: 50%;
   margin-left: -50vw; margin-right: -50vw;
   margin-top: 140px;
-  padding: 100px 100px;
+  padding: 100px 100px 160px 100px;
   background: #000;
   display: flex;
   justify-content: space-between;
@@ -393,7 +393,7 @@ img { border-radius: 16px; }
   .specs-grid { grid-template-columns: 1fr 1fr; }
   .case-hero { padding: 140px 50px 50px 50px; }
   .case-body { padding: 80px 50px 0 50px; gap: 100px; }
-  .footer-nav { margin-top: 100px; padding: 60px 50px; flex-direction: column; gap: 24px; align-items: stretch; }
+  .footer-nav { margin-top: 100px; padding: 60px 50px 120px 50px; flex-direction: column; gap: 24px; align-items: stretch; }
   .btn-group { flex-direction: column; }
   .resume-row { grid-template-columns: 1fr; gap: 8px; }
   .resume-period { text-align: left; }
@@ -429,7 +429,7 @@ img { border-radius: 16px; }
   .case-hero .project-title { max-width: 100%; font-size: clamp(2.4rem, 9vw, 4rem); }
   .case-body { padding: 60px 24px 0 24px; gap: 80px; }
   .specs-grid { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; }
-  .footer-nav { margin-top: 80px; padding: 60px 24px; }
+  .footer-nav { margin-top: 80px; padding: 60px 24px 120px 24px; }
 
   #scrollAffordance { bottom: 20px; right: 24px; }
   #stickyBack { padding: 0 20px; }
