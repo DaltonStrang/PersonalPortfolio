@@ -9,32 +9,28 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 100%; height: 100%; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; }
 
-body {
-  background: #000;
-  color: #fff;
-  overflow-x: hidden;
-}
-:root{
-  --surface:#fbfbfa;
-  --text:#111;
-  --muted:rgba(0,0,0,.55);
-}
-html{scroll-behavior:smooth;}
-::selection{background:#fff;color:#000;}
+body { background: #000; color: #fff; overflow-x: hidden; }
 
-a:focus-visible, button:focus-visible, .square:focus-visible{
- outline:3px solid #107dff;
- outline-offset:4px;
-}
-@media (prefers-reduced-motion: reduce){
- *{
-   animation:none !important;
-   transition:none !important;
-   scroll-behavior:auto !important;
- }
+:root {
+  --surface: #fbfbfa;
+  --text: #111;
+  --muted: rgba(0,0,0,.55);
 }
 
-/* ── REFINED CURSOR ── */
+html { scroll-behavior: smooth; }
+::selection { background: #fff; color: #000; }
+
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid #107dff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* ── CURSOR ── */
 #cursor {
   position: fixed;
   width: 6px; height: 6px;
@@ -55,26 +51,59 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 }
 
 /* ── BACKGROUND GALLERY ── */
-.background-gallery {
-  position: fixed; inset: 0; overflow: hidden; z-index: 1;
-}
+.background-gallery { position: fixed; inset: 0; overflow: hidden; z-index: 1; }
 .bg-slide {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
   transform: scale(1.04);
-  filter:none;
-}
-.background-gallery:after{
- content:'';
- position:absolute;
- inset:0;
- pointer-events:none;
 }
 
-/* ── TYPOGRAPHIC NAV BAR ── */
+/* ── SCROLL AFFORDANCE ── */
+#scrollAffordance {
+  position: fixed;
+  bottom: 36px; right: 48px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+#scrollAffordance .afford-hint {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+#scrollAffordance .afford-chevrons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+#scrollAffordance .afford-chevrons span {
+  display: block;
+  width: 10px;
+  height: 6px;
+  border-right: 1.5px solid rgba(255,255,255,0.35);
+  border-bottom: 1.5px solid rgba(255,255,255,0.35);
+  transform: rotate(45deg);
+  animation: chevPulse 1.8s ease-in-out infinite;
+}
+#scrollAffordance .afford-chevrons span:nth-child(2) { animation-delay: 0.2s; opacity: 0.6; }
+#scrollAffordance .afford-chevrons span:nth-child(3) { animation-delay: 0.4s; opacity: 0.3; }
+@keyframes chevPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.2; }
+}
+#scrollAffordance.hidden { opacity: 0; }
+
+/* ── NAV ── */
 .nav {
-  position: fixed; 
+  position: fixed;
   top: 0; left: 0; right: 0;
   height: 120px;
   display: flex; justify-content: space-between; align-items: center;
@@ -82,43 +111,90 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   z-index: 100;
   mix-blend-mode: difference;
 }
-.nav-brand-group {
-  display: flex; flex-direction: column; gap: 4px;
-}
-.nav-logo {
-  font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none;
-}
-.nav-email {
-  font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.55); text-decoration: none; letter-spacing: -0.01em; transition: color 0.2s;
-}
+.nav-brand-group { display: flex; flex-direction: column; gap: 4px; }
+.nav-logo { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: #fff; text-decoration: none; }
+.nav-email { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.55); text-decoration: none; letter-spacing: -0.01em; transition: color 0.2s; }
 .nav-email:hover { color: #fff; }
-
-.nav-center-group {
-  display: flex; align-items: center; gap: 60px;
-}
-.nav-links {
-  display: flex; gap: 40px; font-size: 15px; font-weight: 400;
-}
-.nav-item {
-  color: rgba(255, 255, 255, 0.55); text-decoration: none; transition: color 0.2s;
-}
+.nav-center-group { display: flex; align-items: center; gap: 60px; }
+.nav-links { display: flex; gap: 40px; font-size: 15px; font-weight: 400; }
+.nav-item { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
 .nav-item:hover, .nav-item.active { color: #fff; }
 
-/* ── MAIN ROUTER WRAPPER ── */
-#viewRouter {
-  position: relative;
-  width: 100%;
-  z-index: 10;
+/* ── STICKY BACK NAV (case study context) ── */
+#stickyBack {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(251,251,250,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
+#stickyBack.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+#stickyBack .sticky-back-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.6);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+  transition: color 0.2s;
+  padding: 0;
+}
+#stickyBack .sticky-back-btn:hover { color: #000; }
+#stickyBack .sticky-back-btn svg { width: 14px; height: 14px; }
+#stickyBack .sticky-case-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.4);
+  letter-spacing: -0.01em;
+}
+#stickyBack .sticky-next-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.6);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+  transition: color 0.2s;
+  padding: 0;
+}
+#stickyBack .sticky-next-btn:hover { color: #000; }
+#stickyBack .sticky-next-btn svg { width: 14px; height: 14px; }
 
-/* ── HOME / INDEX VIEW ── */
+/* ── VIEW ROUTER ── */
+#viewRouter { position: relative; width: 100%; z-index: 10; }
+
+/* ── HOME VIEW ── */
 .home-view {
-  position: fixed; inset: 0; 
+  position: fixed; inset: 0;
   opacity: 1; visibility: visible;
   pointer-events: all;
   touch-action: none;
 }
 
+/* ── PROJECT CARD ── */
 .square-container {
   position: fixed;
   left: 60px; bottom: 60px;
@@ -134,7 +210,38 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   position: relative;
   border-radius: 16px;
   box-shadow: 0 30px 120px rgba(0,0,0,.28);
-  backdrop-filter: blur(10px);
+  transition: transform 0.4s cubic-bezier(0.215, 0.610, 0.355, 1), box-shadow 0.4s cubic-bezier(0.215, 0.610, 0.355, 1);
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .square:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 44px 140px rgba(0,0,0,.36);
+  }
+}
+
+/* Card hover label */
+.square-hover-label {
+  position: absolute;
+  bottom: 50px; right: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  letter-spacing: -0.01em;
+  z-index: 5;
+}
+.square-hover-label svg { width: 12px; height: 12px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .square:hover .square-hover-label { opacity: 1; transform: translateY(0); }
 }
 
 .title-slide {
@@ -144,51 +251,57 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   justify-content: space-between;
   padding: 50px;
 }
-.project-number {
-  font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35);
-}
+.project-number { font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); }
 .project-title {
   font-size: clamp(2.4rem, 3.2vw, 4.2rem);
   line-height: 0.95; letter-spacing: -0.04em; font-weight: 500;
 }
 .word { display: inline-block; margin-right: .18em; }
-.project-tags {
-  font-size: 14px; font-weight: 400; color: rgba(0,0,0,.45); line-height: 1.6; letter-spacing: -0.01em;
-}
+.project-tags { font-size: 14px; font-weight: 400; color: rgba(0,0,0,.45); line-height: 1.6; letter-spacing: -0.01em; }
 
-/* ── FLAT PAGE LAYOUTS ── */
+/* ── PAGE VIEWS ── */
 .page-view {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
   background: #fbfbfa;
   color: #000;
-  opacity: 0; 
+  opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  min-height: 100vh;
 }
 
+/* About view gets its own element */
+#aboutView {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  background: #fbfbfa;
+  color: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  min-height: 100vh;
+}
+
+/* ── CASE HERO ── */
 .case-hero {
   width: 100%; height: 75vh;
   background: #fbfbfa;
   display: flex; flex-direction: column; justify-content: space-between;
-  padding: 220px 100px 80px 100px;
+  padding: 160px 100px 80px 100px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-.case-hero .project-number {
-  font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.45);
-}
+.case-hero .project-number { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.45); }
 .case-hero .project-title {
   font-size: clamp(3.8rem, 6.8vw, 8rem);
-  max-width: 85%;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  max-width: 85%; font-weight: 500;
+  letter-spacing: -0.03em; line-height: 1.05;
 }
-.case-hero .project-tags {
-  font-size: 18px; font-weight: 400; color: rgba(0,0,0,.5); letter-spacing: -0.01em;
-}
+.case-hero .project-tags { font-size: 18px; font-weight: 400; color: rgba(0,0,0,.5); letter-spacing: -0.01em; }
 
+/* ── CASE BODY ── */
 .case-body {
   max-width: 1440px;
   margin: 0 auto;
@@ -196,54 +309,41 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   display: flex; flex-direction: column; gap: 140px;
 }
 
-.editorial-intro {
-  display: grid; grid-template-columns: 1fr; gap: 100px; align-items: start;
-}
-.section-label {
-  font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35);
-}
-.case-desc {
-  font-size: clamp(1.6rem, 2.2vw, 2.5rem);
-  line-height: 1.45; color: rgba(0,0,0,0.85); font-weight: 400; letter-spacing: -0.02em;
-}
+.editorial-intro { display: grid; grid-template-columns: 1fr; gap: 100px; align-items: start; }
+.section-label { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); }
+.case-desc { font-size: clamp(1.6rem, 2.2vw, 2.5rem); line-height: 1.45; color: rgba(0,0,0,0.85); font-weight: 400; letter-spacing: -0.02em; }
 
 .specs-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
   border-top: 1px solid rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.06);
   padding: 60px 0;
 }
-.spec-label {
-  font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); margin-bottom: 14px;
-}
+.spec-label { font-size: 13px; font-weight: 500; letter-spacing: -0.01em; color: rgba(0,0,0,.35); margin-bottom: 14px; }
 .spec-value { font-size: 20px; font-weight: 400; color: rgba(0,0,0,.8); letter-spacing: -0.01em; line-height: 1.4; }
 
-/* ── EXPERIENCE SECTION ── */
-.resume-container {
-  display: flex; flex-direction: column; gap: 48px; width: 100%;
-}
+/* ── EXPERIENCE / RESUME ── */
+.resume-container { display: flex; flex-direction: column; gap: 48px; width: 100%; }
 .resume-row {
-  display: grid; grid-template-columns: 1.5fr 3fr 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: grid; grid-template-columns: 1.5fr 3fr 1fr; gap: 20px;
+  padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 .resume-row:first-child { border-top: 1px solid rgba(0,0,0,0.06); }
 .resume-org { font-size: 18px; font-weight: 500; color: #000; }
 .resume-role { font-size: 18px; font-weight: 400; color: rgba(0,0,0,0.8); }
 .resume-period { font-size: 15px; font-weight: 400; color: rgba(0,0,0,0.4); text-align: right; }
 
-.case-visuals {
-  display: flex; flex-direction: column; gap: 4px;
-}
+/* ── VISUALS ── */
+.case-visuals { display: flex; flex-direction: column; gap: 4px; }
 .img-container img { width: 100%; height: auto; display: block; filter: grayscale(15%); transition: filter 0.5s; }
 .img-container img:hover { filter: grayscale(0%); }
 
-.palette-section {
-  display: grid; grid-template-columns: 2fr 1.5fr; gap: 100px;
-}
+/* ── PALETTE ── */
+.palette-section { display: grid; grid-template-columns: 2fr 1.5fr; gap: 100px; }
 .palette-row { display: flex; gap: 2px; height: 44px; width: 100%; }
 .palette-swatch { flex: 1; height: 100%; }
 
-.process-section {
-  display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px;
-}
+/* ── PROCESS ── */
+.process-section { display: grid; grid-template-columns: 1fr 2.2fr; gap: 100px; }
 .process-steps { display: flex; flex-direction: column; }
 .process-step {
   display: flex; gap: 60px; align-items: flex-start;
@@ -253,14 +353,12 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
 .step-num { font-size: 15px; font-weight: 500; color: rgba(0,0,0,.3); letter-spacing: -0.01em; }
 .step-text { font-size: 21px; line-height: 1.55; color: rgba(0,0,0,.75); font-weight: 400; letter-spacing: -0.015em; }
 
-/* ── FULL WIDTH SECURE FOOTER ── */
+/* ── FOOTER NAV ── */
 .footer-nav {
   width: 100vw;
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  left: 50%; right: 50%;
+  margin-left: -50vw; margin-right: -50vw;
   margin-top: 140px;
   padding: 100px 100px;
   background: #000;
@@ -268,141 +366,149 @@ a:focus-visible, button:focus-visible, .square:focus-visible{
   justify-content: space-between;
   align-items: center;
 }
-.btn-group {
-  display: flex;
-  gap: 20px;
-  
-}
+.btn-group { display: flex; gap: 20px; }
 .back-btn {
-  font-size: 15px; font-weight: 500; background: #fff; color: #000; border: none;
+  font-size: 15px; font-weight: 500; background: #fff; color: #000;
   letter-spacing: -0.01em; padding: 18px 38px; border: 1px solid #fff;
   transition: background 0.3s, color 0.3s, border-color 0.3s;
-  border-radius: 16px;
+  border-radius: 16px; cursor: pointer;
 }
 .back-btn:hover { background: #000; color: #fff; border-color: rgba(255,255,255,0.4); }
-
 .next-btn {
-  font-size: 15px; font-weight: 500; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25);
+  font-size: 15px; font-weight: 500; background: transparent; color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
   letter-spacing: -0.01em; padding: 18px 38px;
   transition: background 0.3s, color 0.3s, border-color 0.3s;
-  border-radius: 16px;
+  border-radius: 16px; cursor: pointer;
 }
 .next-btn:hover { background: #fff; color: #000; border-color: #fff; }
+
 img { border-radius: 16px; }
 
-/* ── RESPONSIVE BREAKPOINTS ── */
+/* ── RESPONSIVE ── */
 @media(max-width:1024px) {
   .nav { padding: 0 30px; height: 90px; }
   .nav-center-group { gap: 30px; }
   .editorial-intro, .palette-section, .process-section { grid-template-columns: 1fr; gap: 32px; }
   .specs-grid { grid-template-columns: 1fr 1fr; }
-  .case-hero { padding: 160px 50px 50px 50px; }
+  .case-hero { padding: 140px 50px 50px 50px; }
   .case-body { padding: 80px 50px 0 50px; gap: 100px; }
   .footer-nav { margin-top: 100px; padding: 60px 50px; flex-direction: column; gap: 24px; align-items: stretch; }
   .btn-group { flex-direction: column; }
   .resume-row { grid-template-columns: 1fr; gap: 8px; }
   .resume-period { text-align: left; }
+  #stickyBack { padding: 0 30px; }
 }
 
-@media(max-width:768px){
-  .nav{
-    height: auto;
-    padding: 24px 20px;
-    align-items: flex-start;
-    flex-direction: row;
+@media(max-width:768px) {
+  .nav {
+    height: auto; padding: 24px 20px;
+    align-items: flex-start; flex-direction: row;
     justify-content: space-between;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent);
   }
-  .nav-brand-group {
-    gap: 2px;
+  .nav-brand-group { gap: 2px; }
+  .nav-center-group { gap: 16px; }
+  .nav-links { gap: 16px; }
+
+  .square-container {
+    left: 20px; right: 20px; bottom: 40px;
+    width: auto; height: auto; aspect-ratio: auto; min-width: 0;
   }
-  .nav-center-group {
-    gap: 16px;
-  }
-  .nav-links {
-    gap: 16px;
-  }
-  
-  .square-container { 
-    left: 20px; 
-    right: 20px; 
-    bottom: 40px; 
-    width: auto; 
-    height: auto; 
-    aspect-ratio: auto; 
-    min-width: 0; 
-  }
-  .square {
-    height: 200px;
-  }
-  /* FORCE TITLE SLIDES ON MOBILE TO POSITION ABSOLUTELY INSIDE CONTAINMENT FIELD */
+  .square { height: 200px; }
+  .square-hover-label { display: none; }
+
   .title-slide {
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     padding: 30px 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: flex; flex-direction: column; justify-content: space-between;
   }
-  .project-title{
-    line-height: 1.05;
-    font-size: clamp(1.8rem, 6.5vw, 2.6rem);
-    letter-spacing: -0.02em;
-  }
-  
-  .case-hero {
-    padding: 140px 24px 40px 24px;
-    height: auto;
-    gap: 40px;
-  }
-  .case-hero .project-title{
-    max-width:100%;
-    font-size:clamp(2.4rem, 9vw, 4rem);
-  }
-  .case-body {
-    padding: 60px 24px 0 24px;
-    gap: 80px;
-  }
-  .specs-grid{
-    grid-template-columns:1fr;
-    gap: 24px;
-    padding: 40px 0;
-  }
-  .footer-nav {
-    margin-top: 80px;
-    padding: 60px 24px;
-  }
+  .project-title { line-height: 1.05; font-size: clamp(1.8rem, 6.5vw, 2.6rem); letter-spacing: -0.02em; }
+
+  .case-hero { padding: 120px 24px 40px 24px; height: auto; gap: 40px; }
+  .case-hero .project-title { max-width: 100%; font-size: clamp(2.4rem, 9vw, 4rem); }
+  .case-body { padding: 60px 24px 0 24px; gap: 80px; }
+  .specs-grid { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; }
+  .footer-nav { margin-top: 80px; padding: 60px 24px; }
+
+  #scrollAffordance { bottom: 20px; right: 24px; }
+  #stickyBack { padding: 0 20px; }
+  #stickyBack .sticky-case-title { display: none; }
 }
 </style>
 </head>
 <body>
 
-<div id="cursor"></div>
+<div id="cursor" role="presentation"></div>
 
-<div class="background-gallery"></div>
+<!-- ── SCROLL AFFORDANCE ── -->
+<div id="scrollAffordance" aria-hidden="true">
+  <span class="afford-hint">Scroll to explore</span>
+  <div class="afford-chevrons">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
 
-<div class="nav" role="navigation" aria-label="Primary navigation">
+<div class="background-gallery" aria-hidden="true"></div>
+
+<!-- ── STICKY BACK NAV ── -->
+<div id="stickyBack" role="navigation" aria-label="Case study navigation">
+  <button class="sticky-back-btn" id="stickyBackBtn" aria-label="Return to project index">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 2L4 7l5 5"/>
+    </svg>
+    Index
+  </button>
+  <span class="sticky-case-title" id="stickyCaseTitle" aria-live="polite"></span>
+  <button class="sticky-next-btn" id="stickyNextBtn">
+    Next project
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 2l5 5-5 5"/>
+    </svg>
+  </button>
+</div>
+
+<nav class="nav" aria-label="Primary navigation">
   <div class="nav-brand-group">
-    <a href="#" class="nav-logo" id="brandLogo">Dalton </a>
+    <a href="#" class="nav-logo" id="brandLogo">Dalton</a>
     <a href="mailto:strangdalton@gmail.com" class="nav-email">strangdalton@gmail.com</a>
   </div>
   <div class="nav-center-group">
     <div class="nav-links">
-      <a href="#" class="nav-item active" id="navIndex">Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)</a>
+      <a href="#" class="nav-item active" id="navIndex" aria-current="page">
+        Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)
+      </a>
       <a href="#" class="nav-item" id="navAbout">About</a>
     </div>
   </div>
-</div>
+</nav>
 
 <div id="viewRouter">
-  
+
+  <!-- HOME VIEW -->
   <div class="home-view" id="homeView">
     <div class="square-container" id="squareContainer">
-      <div class="square" id="square" tabindex="0" aria-label="Open selected project"></div>
+      <div
+        class="square"
+        id="square"
+        tabindex="0"
+        role="button"
+        aria-label="Open project"
+      >
+        <div class="square-hover-label" aria-hidden="true">
+          View case study
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 6h8M6 2l4 4-4 4"/>
+          </svg>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="page-view" id="pageView">
+  <!-- PROJECT VIEW -->
+  <div class="page-view" id="pageView" aria-live="polite">
     <div class="case-hero">
       <div class="project-number" id="caseOverline"></div>
       <h1 class="project-title" id="caseTitle"></h1>
@@ -410,170 +516,25 @@ img { border-radius: 16px; }
     </div>
     <div class="case-body" id="caseBodyContent"></div>
   </div>
-  
-</div>
 
-<script>
-const projects=[
-{
-  title:"CobbleStone Software",
-  tags:["Brand Identity","Colour Strategy"],
-  year:"2025",client:"Palette Inc.",
-  scope:"Identity Systems · Digital Products",
-  industry:"Design Tools",duration:"14 weeks",
-  desc:"A comprehensive identity system built entirely around chromatic language — treating colour not as decoration but as primary communication. The functional framework adapts across 48 digital touchpoints cleanly.",
-  palette:["#1a1a2e","#16213e","#0f3460","#e94560","#f5f0e8"],
-  process:["Discovery & competitive audit across 120 design-tool platforms","Developed structural identity directions focusing on typographic scale","Built modular colour grammar with 5 primary + 14 secondary tokens","Delivered adaptive asset framework optimized for screens and systems"],
-  images:["https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80"],
-  bg:"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1800&q=80"
-},
-{
-  title:"Step",
-  tags:["Brand Identity","Product Design"],
-  year:"2025",client:"Antithesis",
-  scope:"Identity Architecture · Bespoke Display Axis",
-  industry:"Architecture Office",duration:"22 weeks",
-  desc:"An identity built for an architectural practice that focuses on contrast: raw and refined, permanent and ephemeral. A tailored display typeface anchoring systemic grid layouts provides structural continuity.",
-  palette:["#0d0d0d","#1c1c1c","#f0ede8","#c8b89a","#8b7355"],
-  process:["Brand strategy workshops defining typographic priorities","Display type layouts: sketch concepts translated to clean vector paths","Engineered custom variable scaling rules for spatial systems","Production deployment: digital layout templates and spatial signage specs"],
-  images:["https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1400&q=80"],
-  bg:"https://hg8awblbwpaid9k0.public.blob.vercel-storage.com/Step-cover-home.PNG"
-},
-{
-  title:"Mind Brulee",
-  tags:["Logomark Architecture","Motion Guidelines"],
-  year:"2024",client:"Monomark",
-  scope:"Mark Architecture · Interaction Mechanics",
-  industry:"Finance Platforms",duration:"10 weeks",
-  desc:"A minimalist single-stroke monogram platform developed for a specialized private market platform. Designed to scale seamlessly from 16px layouts up to spatial environments without losing structural balance.",
-  palette:["#0a0a0a","#1f1f1f","#2d4a3e","#4a9068","#e8f5e9"],
-  process:["Distilled complex identity elements into a reductive structural grammar","Constructed architectural grid boundaries based on strict design constraints","Engineered custom interaction states and dynamic transition metrics","Delivered functional specification guidelines mapping interface behavior"],
-  images:["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=1400&q=80"],
-  bg:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1800&q=80"
-},
-{
-  title:"Kinetic Archive",
-  tags:["Brand Systems","Editorial Direction"],
-  year:"2024",client:"Kinetic Foundation",
-  scope:"Design Tokens · Spatial Layouts · Web Architecture",
-  industry:"Arts & Culture",duration:"18 weeks",
-  desc:"An architectural identity design framework for a regional moving-image archive. Built heavily upon a flexible structural grid system that treats archival metadata with clear hierarchy and functional beauty.",
-  palette:["#f7f4ef","#e8e4dc","#c4a882","#8b6914","#2c1810"],
-  process:["Investigated historical spatial identity layouts and grid frameworks","Constructed a scalable 6-column canvas utilizing limited typographic variations","Developed structured layout models optimized across print surfaces and digital screens","Exported integrated design tokens directly into production code environments"],
-  images:["https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1400&q=80","https://images.unsplash.com/photo-1558618047-f4e60cef3895?auto=format&fit=crop&w=1400&q=80"],
-  bg:"https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1800&q=80"
-}
-];
-
-let current=0;
-let animating=false;
-let currentView = 'index'; 
-
-const gallery=document.querySelector(".background-gallery");
-const squareContainer=document.getElementById("squareContainer");
-const square=document.getElementById("square");
-const homeView=document.getElementById("homeView");
-const pageView=document.getElementById("pageView");
-const cursor=document.getElementById("cursor");
-
-document.getElementById("totalIndexStr").textContent = String(projects.length).padStart(2,"0");
-
-/* ── CURSOR INTERACTION ENGINE ── */
-let mx=window.innerWidth/2, my=window.innerHeight/2;
-let cx=mx, cy=my;
-let isTouchDevice = false;
-
-if (window.matchMedia("(pointer: coarse)").matches) {
-  isTouchDevice = true;
-}
-
-if (!isTouchDevice) {
-  document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
-  (function animCursor(){
-    cx+=(mx-cx)*.12; cy+=(my-cy)*.12;
-    cursor.style.left=cx+"px"; cursor.style.top=cy+"px";
-    requestAnimationFrame(animCursor);
-  })();
-}
-
-function setupCursorHovers() {
-  if (isTouchDevice) return;
-  const elements = [
-    square, 
-    document.getElementById("navAbout"), 
-    document.getElementById("navIndex"), 
-    document.getElementById("brandLogo")
-  ];
-  elements.forEach(el => {
-    if(!el) return;
-    el.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
-    el.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
-  });
-}
-
-function bindDynamicButtons() {
-  const backBtn = document.getElementById("caseBackBtn");
-  const nextBtn = document.getElementById("caseNextBtn");
-  
-  if(!isTouchDevice) {
-    [backBtn, nextBtn].forEach(btn => {
-      if(!btn) return;
-      btn.addEventListener("mouseenter",()=>cursor.classList.add("expanded"));
-      btn.addEventListener("mouseleave",()=>cursor.classList.remove("expanded"));
-    });
-  }
-
-  if(backBtn) backBtn.addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
-  if(nextBtn) nextBtn.addEventListener("click", (e) => { e.preventDefault(); navigateNextProject(); });
-}
-
-/* ── DOM GENERATORS ── */
-function splitWords(text){
-  return text.split(" ").map(w=>`<span class="word">${w}</span>`).join(" ");
-}
-function createBG(src){
-  const img=document.createElement("img");
-  img.src=src; img.className="bg-slide";
-  gallery.appendChild(img); return img;
-}
-function createTitle(index){
-  const p=projects[index];
-  const wrap=document.createElement("div");
-  wrap.className="title-slide";
-  wrap.innerHTML=`
-    <div class="project-number">${String(index+1).padStart(2,"0")} — ${String(projects.length).padStart(2,"0")}</div>
-    <h1 class="project-title">${splitWords(p.title)}</h1>
-    <div class="project-tags">${p.tags.join(" &nbsp;·&nbsp; ")}</div>
-  `;
-  square.appendChild(wrap); return wrap;
-}
-
-createBG(projects[0].bg);
-createTitle(0);
-
-// Initialize initial layout bounds cleanly
-if (window.innerWidth <= 768) {
-  const initialSlide = square.querySelector(".title-slide");
-  gsap.set(square, { height: initialSlide.offsetHeight });
-}
-
-setupCursorHovers();
-
-/* ── GRAPHIC LAYOUT GENERATOR ── */
-function generateViewHTML(target) {
-  if(target === 'about') {
-    return `
+  <!-- ABOUT VIEW (separate DOM node) -->
+  <div id="aboutView" aria-live="polite">
+    <div class="case-hero">
+      <div class="project-number">Dalton Strang</div>
+      <h1 class="project-title">Design Practice & Systems</h1>
+      <div class="project-tags">Product Designer &amp; Front-End Engineer</div>
+    </div>
+    <div class="case-body">
       <div class="editorial-intro">
-        <div class="section-label">Profile</div><div style="margin-bottom:24px;font-size:14px;color:rgba(0,0,0,.45)">Designer • Front‑End Developer • Design Systems Specialist</div>
-        <p class="case-desc">Philadelphia-based product designer, front-end engineer, and independent collaborator building high-utility interactive spaces. Aligning strictly with functional Swiss design methodology, my methodology weights absolute grid logic, geometric containment, and deliberate typographic hierarchy to optimize product utility and structural value.</p>
+        <div class="section-label">Profile</div>
+        <p class="case-desc">Philadelphia-based product designer, front-end engineer, and independent collaborator building high-utility interactive spaces. My methodology weights absolute grid logic, geometric containment, and deliberate typographic hierarchy to optimize product utility and structural value.</p>
       </div>
       <div class="specs-grid">
         <div><div class="spec-label">Core Engineering</div><div class="spec-value">Interface Engineering<br>Design Systems UI<br>JavaScript & Python</div></div>
-        <div><div class="spec-label">Availability</div><div class="spec-value">Open for Contracts<br>Contract Rate: $50 / hr</div></div>
-        <div><div class="spec-label">Location Base</div><div class="spec-value">Philadelphia, PA<br>Remote / Hybrid Available</div></div>
-        <div><div class="spec-label">Direct Line</div><div class="spec-value">hello@daltonstrang.design</div></div>
+        <div><div class="spec-label">Availability</div><div class="spec-value">Open for Contracts</div></div>
+        <div><div class="spec-label">Location</div><div class="spec-value">Philadelphia, PA<br>Remote / Hybrid</div></div>
+        <div><div class="spec-label">Direct Line</div><div class="spec-value">strangdalton@gmail.com</div></div>
       </div>
-      
       <div class="editorial-intro">
         <div class="section-label">Experience</div>
         <div class="resume-container">
@@ -584,17 +545,16 @@ function generateViewHTML(target) {
           </div>
           <div class="resume-row">
             <div class="resume-org">PhillyJS</div>
-            <div class="resume-role">Organizer / Primary Logistics Contact<br>Directing scheduling parameters, community outreach coordination, event automation engineering, and sponsor logistics for the Philadelphia JavaScript Club ecosystem.</div>
+            <div class="resume-role">Organizer / Primary Logistics Contact<br>Directing scheduling, community outreach, event automation, and sponsor logistics for the Philadelphia JavaScript Club ecosystem.</div>
             <div class="resume-period">2025 — Pres.</div>
           </div>
           <div class="resume-row">
             <div class="resume-org">CobbleStone Software</div>
-            <div class="resume-role">UI Designer & Front-End Developer<br>Architecting targeted system modules, multi-variant web experiences, application assets, and interaction logic sets within enterprise product boundaries.</div>
+            <div class="resume-role">UI Designer & Front-End Developer<br>Architecting system modules, multi-variant web experiences, application assets, and interaction logic within enterprise product boundaries.</div>
             <div class="resume-period">2023 — 2025</div>
           </div>
         </div>
       </div>
-
       <div class="editorial-intro">
         <div class="section-label">Technical Competencies</div>
         <div class="resume-container">
@@ -604,148 +564,401 @@ function generateViewHTML(target) {
             <div class="resume-period">Expertise</div>
           </div>
           <div class="resume-row">
-            <div class="resume-org">Development Axis</div>
-            <div class="resume-role">HTML5/CSS3 Core, Modern Vanilla JavaScript (ES6+), State Management UI, Git/Version Automation, Python Automation Scripts</div>
+            <div class="resume-org">Development</div>
+            <div class="resume-role">HTML5/CSS3, Modern Vanilla JavaScript (ES6+), State Management UI, Git/Version Automation, Python Automation Scripts</div>
             <div class="resume-period">Expertise</div>
           </div>
         </div>
       </div>
-
       <div class="footer-nav">
-        <button class="back-btn" id="caseBackBtn">Return to Index</button>
+        <button class="back-btn" id="aboutBackBtn">Return to Index</button>
         <div></div>
       </div>
-    `;
-  } else {
-    const p = projects[current];
-    const nextIndex = (current + 1) % projects.length;
-    const nextProjectTitle = projects[nextIndex].title;
+    </div>
+  </div>
 
-    return `
-      <div class="editorial-intro">
-        <div class="section-label">Case Analysis</div>
-        <p class="case-desc">${p.desc}</p>
-      </div>
-      <div class="specs-grid">
-        <div><div class="spec-label">Scope</div><div class="spec-value">${p.scope}</div></div>
-        <div><div class="spec-label">Client</div><div class="spec-value">${p.client}</div></div>
-        <div><div class="spec-label">Duration</div><div class="spec-value">${p.duration}</div></div>
-        <div><div class="spec-label">Timeline</div><div class="spec-value">${p.year}</div></div>
-      </div>
-      <div class="case-visuals">
-        <div class="img-container"><img src="${p.images[0]}" alt="Project showcase image"></div>
-        <div class="img-container"><img src="${p.images[1]}" alt="Project showcase image"></div>
-      </div>
-      <div class="palette-section">
-        <div class="section-label">System Swatches</div>
-        <div class="palette-row">${p.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join("")}</div>
-      </div>
-      <div class="process-section">
-        <div class="section-label">Implementation Steps</div>
-        <div class="process-steps">${p.process.map((s,i)=>`
-          <div class="process-step">
-            <div class="step-num">${String(i+1).padStart(2,"0")}</div>
-            <div class="step-text">${s}</div>
-          </div>`).join("")}
-        </div>
-      </div>
-      <div class="footer-nav">
-        <button class="back-btn" id="caseBackBtn">Return to Index</button>
-        <div class="btn-group">
-          <button class="next-btn" id="caseNextBtn">Next: ${nextProjectTitle}</button>
-        </div>
-      </div>
-    `;
+</div>
+
+<script>
+/* ── DATA ── */
+const projects = [
+  {
+    title: "CobbleStone Software",
+    tags: ["Brand Identity", "Colour Strategy"],
+    year: "2025", client: "Palette Inc.",
+    scope: "Identity Systems · Digital Products",
+    industry: "Design Tools", duration: "14 weeks",
+    desc: "A comprehensive identity system built entirely around chromatic language — treating colour not as decoration but as primary communication. The functional framework adapts across 48 digital touchpoints cleanly.",
+    palette: ["#1a1a2e","#16213e","#0f3460","#e94560","#f5f0e8"],
+    process: [
+      "Discovery & competitive audit across 120 design-tool platforms",
+      "Developed structural identity directions focusing on typographic scale",
+      "Built modular colour grammar with 5 primary + 14 secondary tokens",
+      "Delivered adaptive asset framework optimized for screens and systems"
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80"
+    ],
+    bg: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1800&q=80"
+  },
+  {
+    title: "Step",
+    tags: ["Brand Identity", "Product Design"],
+    year: "2025", client: "Antithesis",
+    scope: "Identity Architecture · Bespoke Display Axis",
+    industry: "Architecture Office", duration: "22 weeks",
+    desc: "An identity built for an architectural practice that focuses on contrast: raw and refined, permanent and ephemeral. A tailored display typeface anchoring systemic grid layouts provides structural continuity.",
+    palette: ["#0d0d0d","#1c1c1c","#f0ede8","#c8b89a","#8b7355"],
+    process: [
+      "Brand strategy workshops defining typographic priorities",
+      "Display type layouts: sketch concepts translated to clean vector paths",
+      "Engineered custom variable scaling rules for spatial systems",
+      "Production deployment: digital layout templates and spatial signage specs"
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1400&q=80"
+    ],
+    bg: "https://hg8awblbwpaid9k0.public.blob.vercel-storage.com/Step-cover-home.PNG"
+  },
+  {
+    title: "Mind Brulee",
+    tags: ["Logomark Architecture", "Motion Guidelines"],
+    year: "2024", client: "Monomark",
+    scope: "Mark Architecture · Interaction Mechanics",
+    industry: "Finance Platforms", duration: "10 weeks",
+    desc: "A minimalist single-stroke monogram platform developed for a specialized private market platform. Designed to scale seamlessly from 16px layouts up to spatial environments without losing structural balance.",
+    palette: ["#0a0a0a","#1f1f1f","#2d4a3e","#4a9068","#e8f5e9"],
+    process: [
+      "Distilled complex identity elements into a reductive structural grammar",
+      "Constructed architectural grid boundaries based on strict design constraints",
+      "Engineered custom interaction states and dynamic transition metrics",
+      "Delivered functional specification guidelines mapping interface behavior"
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=1400&q=80"
+    ],
+    bg: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1800&q=80"
+  },
+  {
+    title: "Kinetic Archive",
+    tags: ["Brand Systems", "Editorial Direction"],
+    year: "2024", client: "Kinetic Foundation",
+    scope: "Design Tokens · Spatial Layouts · Web Architecture",
+    industry: "Arts & Culture", duration: "18 weeks",
+    desc: "An architectural identity design framework for a regional moving-image archive. Built heavily upon a flexible structural grid system that treats archival metadata with clear hierarchy and functional beauty.",
+    palette: ["#f7f4ef","#e8e4dc","#c4a882","#8b6914","#2c1810"],
+    process: [
+      "Investigated historical spatial identity layouts and grid frameworks",
+      "Constructed a scalable 6-column canvas utilizing limited typographic variations",
+      "Developed structured layout models optimized across print surfaces and digital screens",
+      "Exported integrated design tokens directly into production code environments"
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1558618047-f4e60cef3895?auto=format&fit=crop&w=1400&q=80"
+    ],
+    bg: "https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1800&q=80"
+  }
+];
+
+/* ── STATE ── */
+let current = 0;
+let animating = false;
+let currentView = 'index';
+
+/* ── DOM REFS ── */
+const gallery = document.querySelector(".background-gallery");
+const squareContainer = document.getElementById("squareContainer");
+const square = document.getElementById("square");
+const homeView = document.getElementById("homeView");
+const pageView = document.getElementById("pageView");
+const aboutView = document.getElementById("aboutView");
+const cursor = document.getElementById("cursor");
+const scrollAffordance = document.getElementById("scrollAffordance");
+const stickyBack = document.getElementById("stickyBack");
+const stickyBackBtn = document.getElementById("stickyBackBtn");
+const stickyNextBtn = document.getElementById("stickyNextBtn");
+const stickyCaseTitle = document.getElementById("stickyCaseTitle");
+
+document.getElementById("totalIndexStr").textContent = String(projects.length).padStart(2, "0");
+
+/* ── UPDATE SQUARE ARIA LABEL ── */
+function updateSquareLabel() {
+  square.setAttribute("aria-label", `Open ${projects[current].title} case study`);
+}
+updateSquareLabel();
+
+/* ── CURSOR ── */
+let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+let cx = mx, cy = my;
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
+if (!isTouchDevice) {
+  document.addEventListener("mousemove", (e) => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    cx += (mx - cx) * .12; cy += (my - cy) * .12;
+    cursor.style.left = cx + "px"; cursor.style.top = cy + "px";
+    requestAnimationFrame(animCursor);
+  })();
+}
+
+function addCursorExpand(el) {
+  if (!el || isTouchDevice) return;
+  el.addEventListener("mouseenter", () => cursor.classList.add("expanded"));
+  el.addEventListener("mouseleave", () => cursor.classList.remove("expanded"));
+}
+
+function setupCursorHovers() {
+  if (isTouchDevice) return;
+  [square, document.getElementById("navAbout"), document.getElementById("navIndex"), document.getElementById("brandLogo")]
+    .forEach(addCursorExpand);
+}
+setupCursorHovers();
+
+/* ── SCROLL AFFORDANCE HIDE ── */
+let affordanceHidden = false;
+function hideAffordance() {
+  if (affordanceHidden) return;
+  affordanceHidden = true;
+  scrollAffordance.classList.add("hidden");
+}
+
+/* ── STICKY BACK — scroll spy ── */
+let scrollSpyActive = false;
+function enableScrollSpy(title) {
+  scrollSpyActive = true;
+  stickyCaseTitle.textContent = title;
+  window.addEventListener("scroll", onCaseScroll, { passive: true });
+}
+function disableScrollSpy() {
+  scrollSpyActive = false;
+  window.removeEventListener("scroll", onCaseScroll);
+  stickyBack.classList.remove("visible");
+}
+function onCaseScroll() {
+  if (window.scrollY > 120) {
+    stickyBack.classList.add("visible");
+  } else {
+    stickyBack.classList.remove("visible");
   }
 }
 
+/* ── DOM GENERATORS ── */
+function splitWords(text) {
+  return text.split(" ").map(w => `<span class="word">${w}</span>`).join(" ");
+}
+function createBG(src) {
+  const img = document.createElement("img");
+  img.src = src;
+  img.className = "bg-slide";
+  img.alt = "";
+  gallery.appendChild(img);
+  return img;
+}
+function createTitle(index) {
+  const p = projects[index];
+  const wrap = document.createElement("div");
+  wrap.className = "title-slide";
+  wrap.innerHTML = `
+    <div class="project-number">${String(index + 1).padStart(2, "0")} — ${String(projects.length).padStart(2, "0")}</div>
+    <h2 class="project-title">${splitWords(p.title)}</h2>
+    <div class="project-tags">${p.tags.join(" &nbsp;·&nbsp; ")}</div>
+  `;
+  square.appendChild(wrap);
+  return wrap;
+}
+
+/* ── PRELOAD ADJACENT BG ── */
+function preloadBG(index) {
+  const next = (index + 1) % projects.length;
+  const img = new Image();
+  img.src = projects[next].bg;
+}
+
+/* ── INIT ── */
+createBG(projects[0].bg);
+createTitle(0);
+preloadBG(0);
+
+if (window.innerWidth <= 768) {
+  document.fonts.ready.then(() => {
+    const initialSlide = square.querySelector(".title-slide");
+    if (initialSlide) gsap.set(square, { height: initialSlide.offsetHeight });
+  });
+}
+
+/* ── TEMPLATE ENGINE ── */
+const templates = {
+  default: (p, nextProject) => `
+    <div class="editorial-intro">
+      <div class="section-label">Case Analysis</div>
+      <p class="case-desc">${p.desc}</p>
+    </div>
+    <div class="specs-grid">
+      <div><div class="spec-label">Scope</div><div class="spec-value">${p.scope}</div></div>
+      <div><div class="spec-label">Client</div><div class="spec-value">${p.client}</div></div>
+      <div><div class="spec-label">Duration</div><div class="spec-value">${p.duration}</div></div>
+      <div><div class="spec-label">Timeline</div><div class="spec-value">${p.year}</div></div>
+    </div>
+    <div class="case-visuals">
+      <div class="img-container"><img src="${p.images[0]}" alt="${p.title} — project image 1" loading="lazy"></div>
+      <div class="img-container"><img src="${p.images[1]}" alt="${p.title} — project image 2" loading="lazy"></div>
+    </div>
+    <div class="palette-section">
+      <div class="section-label">System Swatches</div>
+      <div class="palette-row">${p.palette.map(c => `<div class="palette-swatch" style="background:${c}" role="presentation"></div>`).join("")}</div>
+    </div>
+    <div class="process-section">
+      <div class="section-label">Implementation Steps</div>
+      <div class="process-steps">${p.process.map((s, i) => `
+        <div class="process-step">
+          <div class="step-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</div>
+          <div class="step-text">${s}</div>
+        </div>`).join("")}
+      </div>
+    </div>
+    <div class="footer-nav">
+      <button class="back-btn" id="caseBackBtn">Return to Index</button>
+      <div class="btn-group">
+        <button class="next-btn" id="caseNextBtn">Next: ${nextProject.title}</button>
+      </div>
+    </div>
+  `
+};
+
+function generateProjectHTML(index) {
+  const p = projects[index];
+  const nextIndex = (index + 1) % projects.length;
+  const nextProject = projects[nextIndex];
+  const layout = p.layout || 'default';
+  return (templates[layout] || templates.default)(p, nextProject);
+}
+
+/* ── UPDATE NAV ── */
 function updateNavStyles(targetView) {
   document.getElementById("navIndex").classList.remove("active");
   document.getElementById("navAbout").classList.remove("active");
-  
+  document.getElementById("navIndex").removeAttribute("aria-current");
+  document.getElementById("navAbout").removeAttribute("aria-current");
+
   if (targetView === 'index') {
     document.getElementById("navIndex").classList.add("active");
+    document.getElementById("navIndex").setAttribute("aria-current", "page");
   } else if (targetView === 'about') {
     document.getElementById("navAbout").classList.add("active");
+    document.getElementById("navAbout").setAttribute("aria-current", "page");
   }
 }
 
-/* ── ARCHITECTURAL VIEW ROUTER ── */
+/* ── BIND DYNAMIC BUTTONS ── */
+function bindCaseButtons() {
+  const backBtn = document.getElementById("caseBackBtn");
+  const nextBtn = document.getElementById("caseNextBtn");
+  if (!isTouchDevice) { addCursorExpand(backBtn); addCursorExpand(nextBtn); }
+  if (backBtn) backBtn.addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+  if (nextBtn) nextBtn.addEventListener("click", (e) => { e.preventDefault(); navigateNextProject(); });
+}
+
+/* ── VIEW SWITCHER ── */
+function getViewEl(view) {
+  if (view === 'index') return homeView;
+  if (view === 'about') return aboutView;
+  return pageView;
+}
+
 function switchView(target) {
   if (animating || currentView === target) return;
   animating = true;
 
   updateNavStyles(target);
+  hideAffordance();
 
-  const oldViewEl = currentView === 'index' ? homeView : pageView;
-  const newViewEl = target === 'index' ? homeView : pageView;
+  const oldViewEl = getViewEl(currentView);
+  const newViewEl = getViewEl(target);
+
+  // Determine transition direction feel
+  const goingDeeper = (currentView === 'index' && target === 'project');
+  const goingBack = (target === 'index');
 
   const tl = gsap.timeline({
     onComplete: () => {
       gsap.set(oldViewEl, { visibility: "hidden", pointerEvents: "none" });
-      
-      if (target !== 'index') {
-        if (target === 'about') {
-          document.getElementById("caseOverline").textContent = "Dalton Strang";
-          document.getElementById("caseTitle").textContent = "Design Practice & Systems";
-          document.getElementById("caseTags").textContent = "Product Designer & Front-End Engineer";
-        } else {
-          const p = projects[current];
-          document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
-          document.getElementById("caseTitle").textContent = p.title;
-          document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
+
+      // Populate project view content
+      if (target === 'project') {
+        const p = projects[current];
+        document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
+        document.getElementById("caseTitle").textContent = p.title;
+        document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
+        document.getElementById("caseBodyContent").innerHTML = generateProjectHTML(current);
+        bindCaseButtons();
+        enableScrollSpy(p.title);
+        stickyCaseTitle.textContent = p.title;
+        // Update sticky next btn
+        const nextIndex = (current + 1) % projects.length;
+        stickyNextBtn.textContent = '';
+        stickyNextBtn.innerHTML = `Next project <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2l5 5-5 5"/></svg>`;
+      }
+
+      if (target === 'about') {
+        disableScrollSpy();
+      }
+
+      if (target === 'index') {
+        disableScrollSpy();
+        if (window.innerWidth <= 768) {
+          const activeSlide = square.querySelector(".title-slide");
+          if (activeSlide) gsap.set(square, { height: activeSlide.offsetHeight });
         }
-        document.getElementById("caseBodyContent").innerHTML = generateViewHTML(target);
-        bindDynamicButtons();
       }
 
       window.scrollTo(0, 0);
       currentView = target;
 
       gsap.set(newViewEl, { visibility: "visible", pointerEvents: "all" });
-      
-      gsap.timeline({
-        onComplete: () => { 
-          animating = false; 
-          setupCursorHovers(); 
-          // Recalculate heights on returning back to index
-          if(target === 'index' && window.innerWidth <= 768) {
-            const activeSlide = square.querySelector(".title-slide");
-            if(activeSlide) gsap.set(square, { height: activeSlide.offsetHeight });
-          }
-        }
-      })
-      .to(newViewEl, { opacity: 1, duration: 0.4, ease: "power2.out" })
-      .fromTo(target === 'index' ? ".square-container" : [".case-hero", ".case-body"], 
-        { y: 15 }, { y: 0, duration: 0.5, ease: "power3.out" }, 0
-      );
+
+      const entryYOffset = goingBack ? -15 : 15;
+
+      gsap.timeline({ onComplete: () => { animating = false; setupCursorHovers(); } })
+        .to(newViewEl, { opacity: 1, duration: 0.4, ease: "power2.out" })
+        .fromTo(
+          target === 'index' ? ".square-container" : (target === 'about' ? "#aboutView .case-hero" : [".case-hero", ".case-body"]),
+          { y: entryYOffset },
+          { y: 0, duration: 0.5, ease: "power3.out" },
+          0
+        );
     }
   });
 
   tl.to(oldViewEl, { opacity: 0, duration: 0.3, ease: "power2.inOut" });
 }
 
-/* ── SEAMLESS CASE-TO-CASE NAVIGATION ── */
+/* ── NEXT PROJECT (case to case) ── */
 function navigateNextProject() {
   if (animating) return;
   animating = true;
 
-  let next = current + 1;
-  if (next >= projects.length) next = 0;
+  let next = (current + 1) % projects.length;
 
-  document.getElementById("currentIndexStr").textContent = String(next+1).padStart(2,"0");
+  document.getElementById("currentIndexStr").textContent = String(next + 1).padStart(2, "0");
+
   const currentBG = gallery.querySelector(".bg-slide:last-child");
   const nextBG = createBG(projects[next].bg);
-  
+
   gsap.set(nextBG, { clipPath: "inset(100% 0 0 0)" });
 
   square.innerHTML = "";
   current = next;
+  updateSquareLabel();
 
   const tl = gsap.timeline({
     onComplete: () => {
       currentBG.remove();
       createTitle(next);
+      preloadBG(next);
       animating = false;
     }
   });
@@ -753,79 +966,57 @@ function navigateNextProject() {
   tl.to(pageView, { opacity: 0, y: -20, duration: 0.25, ease: "power2.in" });
   tl.to(nextBG, { clipPath: "inset(0% 0 0 0%)", duration: 0.65, ease: "power3.inOut" }, 0);
   tl.call(() => {
-    document.getElementById("caseBodyContent").innerHTML = ""; 
+    document.getElementById("caseBodyContent").innerHTML = "";
     const p = projects[current];
     document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
     document.getElementById("caseTitle").textContent = p.title;
     document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
-    document.getElementById("caseBodyContent").innerHTML = generateViewHTML('project');
-    bindDynamicButtons();
+    document.getElementById("caseBodyContent").innerHTML = generateProjectHTML(current);
+    bindCaseButtons();
+    stickyCaseTitle.textContent = p.title;
     window.scrollTo(0, 0);
   }, null, 0.25);
   tl.to(pageView, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.28);
 }
 
-/* ── CORE COMPONENT CONTROLLER LINKS ── */
-square.addEventListener("click", () => switchView('project'));
-
-square.addEventListener("keydown",(e)=>{
- if(e.key==="Enter" || e.key===" "){
-   e.preventDefault();
-   switchView('project');
- }
-});
-
-document.getElementById("navAbout").addEventListener("click", (e) => { e.preventDefault(); switchView('about'); });
-document.getElementById("navIndex").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
-document.getElementById("brandLogo").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
-
-/* ── REFINED SLIDE ENGINE ── */
-function goTo(next, direction=1){
-  if(animating || currentView !== 'index') return;
-  if(next < 0) next = projects.length - 1;
-  if(next >= projects.length) next = 0;
+/* ── SLIDE ENGINE ── */
+function goTo(next, direction = 1) {
+  if (animating || currentView !== 'index') return;
+  if (next < 0) next = projects.length - 1;
+  if (next >= projects.length) next = 0;
   animating = true;
 
-  document.getElementById("currentIndexStr").textContent = String(next+1).padStart(2,"0");
+  hideAffordance();
+
+  document.getElementById("currentIndexStr").textContent = String(next + 1).padStart(2, "0");
 
   const currentBG = gallery.querySelector(".bg-slide:last-child");
   const currentTitle = square.querySelector(".title-slide:last-child");
-
   const nextBG = createBG(projects[next].bg);
   const nextTitle = createTitle(next);
 
-  // Absolute-position layout alignment parameters on setup
   gsap.set(nextBG, { clipPath: direction > 0 ? "inset(100% 0 0 0)" : "inset(0 0 100% 0)" });
   gsap.set(nextTitle, { opacity: 0, y: direction > 0 ? 40 : -40 });
 
   const words = nextTitle.querySelectorAll(".word");
   const tl = gsap.timeline({
-    onComplete(){
+    onComplete() {
       currentBG.remove();
       currentTitle.remove();
       current = next;
+      updateSquareLabel();
+      preloadBG(next);
       animating = false;
     }
   });
 
   tl.to(nextBG, { clipPath: "inset(0% 0 0 0)", duration: 1.0, ease: "power4.inOut" }, 0);
-  
-  /* ── SMOOTH STATE TWEENING ENGINE FOR MOBILE BREAKPOINT ── */
+
   if (window.innerWidth <= 768) {
-    // 1. Force absolute stacking properties via CSS injection to stop layout engine expansion
     gsap.set([currentTitle, nextTitle], { position: "absolute", left: 0, top: 0, width: "100%" });
-    
-    // 2. Programmatically fetch target text layout dimensions cleanly
     const targetHeight = nextTitle.offsetHeight;
-    
-    // 3. Perform a smooth, micro-managed height tween between active content structures
-    tl.to(square, { 
-      height: targetHeight, 
-      duration: 0.6, 
-      ease: "power3.inOut" 
-    }, 0);
+    tl.to(square, { height: targetHeight, duration: 0.6, ease: "power3.inOut" }, 0);
   } else {
-    // Desktop mechanical shifts
     tl.to(squareContainer, { scaleY: 1.01, duration: 0.25, ease: "power2.out" }, 0);
     tl.to(squareContainer, { scaleY: 1, duration: 0.4, ease: "power4.out" }, 0.25);
   }
@@ -835,56 +1026,69 @@ function goTo(next, direction=1){
   tl.fromTo(words, { y: 24, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.02, duration: 0.5, ease: "power4.out" }, 0.32);
 }
 
-/* ── EVENT ROUTERS ── */
+/* ── EVENTS ── */
+square.addEventListener("click", () => switchView('project'));
+square.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); switchView('project'); }
+});
+
+document.getElementById("navAbout").addEventListener("click", (e) => { e.preventDefault(); switchView('about'); });
+document.getElementById("navIndex").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+document.getElementById("brandLogo").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
+document.getElementById("aboutBackBtn").addEventListener("click", () => switchView('index'));
+stickyBackBtn.addEventListener("click", () => switchView('index'));
+stickyNextBtn.addEventListener("click", () => navigateNextProject());
+
 window.addEventListener("wheel", (e) => {
   if (animating || currentView !== 'index') return;
-  if (Math.abs(e.deltaY) < 10) return; 
+  if (Math.abs(e.deltaY) < 10) return;
   if (e.deltaY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
 }, { passive: true });
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && currentView !== 'index') { switchView('index'); return; }
-  
-  if (e.key === "ArrowDown" || e.key === "ArrowRight") { 
-    if(currentView === 'project') navigateNextProject(); 
-    else if(currentView === 'index') goTo(current + 1, 1); 
+  if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+    if (currentView === 'project') navigateNextProject();
+    else if (currentView === 'index') goTo(current + 1, 1);
   }
-  if (e.key === "ArrowUp" || e.key === "ArrowLeft") { 
-    if(currentView === 'index') goTo(current - 1, -1); 
+  if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+    if (currentView === 'index') goTo(current - 1, -1);
   }
 });
 
-/* ── REFACTORED TOUCH ROUTINES FOR DETECTING EXCLUSIVE VERTICAL SWIPES ── */
-let touchStartX = 0;
-let touchStartY = 0;
+/* ── TOUCH ── */
+let touchStartX = 0, touchStartY = 0;
 
-window.addEventListener("touchstart", (e) => { 
-  touchStartX = e.touches[0].clientX; 
+window.addEventListener("touchstart", (e) => {
+  touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
 window.addEventListener("touchend", (e) => {
-  if (currentView !== 'index' || animating) return;
-  
   const diffX = touchStartX - e.changedTouches[0].clientX;
   const diffY = touchStartY - e.changedTouches[0].clientY;
-  
-  if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 40) {
-    if (diffY > 0) {
-      goTo(current + 1, 1);  
-    } else {
-      goTo(current - 1, -1); 
+
+  if (currentView === 'index' && !animating) {
+    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 40) {
+      if (diffY > 0) goTo(current + 1, 1); else goTo(current - 1, -1);
     }
   }
-});
 
-// Window resize safety handler to reset heights across viewport adjustments
+  // Swipe right to go back from project view
+  if (currentView === 'project' && !animating) {
+    if (Math.abs(diffX) > Math.abs(diffY) && diffX < -60) {
+      switchView('index');
+    }
+  }
+}, { passive: true });
+
+/* ── RESIZE ── */
 window.addEventListener("resize", () => {
-  if(currentView === 'index' && window.innerWidth <= 768) {
+  if (currentView === 'index' && window.innerWidth <= 768) {
     const activeSlide = square.querySelector(".title-slide");
-    if(activeSlide) gsap.set(square, { height: activeSlide.offsetHeight });
-  } else {
-    gsap.set(square, { height: "100%" });
+    if (activeSlide) gsap.set(square, { height: activeSlide.offsetHeight });
+  } else if (currentView === 'index') {
+    gsap.set(square, { clearProps: "height" });
   }
 });
 </script>
