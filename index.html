@@ -120,68 +120,68 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .nav-item { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
 .nav-item:hover, .nav-item.active { color: #fff; }
 
-/* ── STICKY READING BAR (case study context) ── */
-#stickyBack {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 60px;
-  background: rgba(251,251,250,0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(0,0,0,0.06);
+/* ── NAV CONTEXT SWITCHER ── */
+.nav-links-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 60px;
-  z-index: 200;
+}
+
+.nav-links-index,
+.nav-links-case {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.nav-links-case {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(100%);
-  transition: transform 0.3s ease, opacity 0.3s ease;
 }
-#stickyBack.visible {
+
+.nav-links-index {
   opacity: 1;
   pointer-events: all;
-  transform: translateY(0);
 }
-#stickyBack .sticky-back-btn {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(0,0,0,0.6);
+
+.nav-case-back,
+.nav-case-about,
+.nav-case-next {
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
   background: none;
   border: none;
+  font-size: 15px;
+  font-weight: 400;
+  font-family: inherit;
+  letter-spacing: -0.01em;
   cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.nav-case-back:hover,
+.nav-case-about:hover,
+.nav-case-next:hover { color: #fff; }
+
+.nav-case-divider {
+  color: rgba(255,255,255,0.2);
+  font-size: 13px;
+  user-select: none;
+}
+
+.nav-case-next {
   display: flex;
   align-items: center;
-  gap: 8px;
-  letter-spacing: -0.01em;
-  transition: color 0.2s;
-  padding: 0;
+  gap: 6px;
 }
-#stickyBack .sticky-back-btn:hover { color: #000; }
-#stickyBack .sticky-back-btn svg { width: 14px; height: 14px; }
-#stickyBack .sticky-case-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(0,0,0,0.4);
-  letter-spacing: -0.01em;
-}
-#stickyBack .sticky-next-btn {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(0,0,0,0.6);
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  letter-spacing: -0.01em;
-  transition: color 0.2s;
-  padding: 0;
-}
-#stickyBack .sticky-next-btn:hover { color: #000; }
-#stickyBack .sticky-next-btn svg { width: 14px; height: 14px; }
+.nav-case-next svg { width: 12px; height: 12px; }
 
 /* ── VIEW ROUTER ── */
 #viewRouter { position: relative; width: 100%; z-index: 10; }
@@ -397,7 +397,7 @@ img { border-radius: 16px; }
   .btn-group { flex-direction: column; }
   .resume-row { grid-template-columns: 1fr; gap: 8px; }
   .resume-period { text-align: left; }
-  #stickyBack { padding: 0 30px; }
+  #navLinksCase { gap: 24px; }
 }
 
 @media(max-width:768px) {
@@ -432,8 +432,8 @@ img { border-radius: 16px; }
   .footer-nav { margin-top: 80px; padding: 60px 24px 120px 24px; }
 
   #scrollAffordance { bottom: 20px; right: 24px; }
-  #stickyBack { padding: 0 20px; }
-  #stickyBack .sticky-case-title { display: none; }
+
+
 }
 </style>
 </head>
@@ -453,34 +453,36 @@ img { border-radius: 16px; }
 
 <div class="background-gallery" aria-hidden="true"></div>
 
-<!-- ── STICKY BACK NAV ── -->
-<div id="stickyBack" role="navigation" aria-label="Case study navigation">
-  <button class="sticky-back-btn" id="stickyBackBtn" aria-label="Return to project index">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M9 2L4 7l5 5"/>
-    </svg>
-    Index
-  </button>
-  <span class="sticky-case-title" id="stickyCaseTitle" aria-live="polite"></span>
-  <button class="sticky-next-btn" id="stickyNextBtn">
-    Next project
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M5 2l5 5-5 5"/>
-    </svg>
-  </button>
-</div>
-
 <nav class="nav" aria-label="Primary navigation">
   <div class="nav-brand-group">
     <a href="#" class="nav-logo" id="brandLogo">Dalton</a>
     <a href="mailto:strangdalton@gmail.com" class="nav-email">strangdalton@gmail.com</a>
   </div>
   <div class="nav-center-group">
-    <div class="nav-links">
-      <a href="#" class="nav-item active" id="navIndex" aria-current="page">
-        Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)
-      </a>
-      <a href="#" class="nav-item" id="navAbout">About</a>
+    <div class="nav-links-wrapper">
+
+      <!-- Index / About state -->
+      <div class="nav-links-index" id="navLinksIndex">
+        <a href="#" class="nav-item active" id="navIndex" aria-current="page">
+          Index (<span id="currentIndexStr">01</span>/<span id="totalIndexStr">04</span>)
+        </a>
+        <a href="#" class="nav-item" id="navAbout">About</a>
+      </div>
+
+      <!-- Case study state: cross-fades in over the above -->
+      <div class="nav-links-case" id="navLinksCase" aria-hidden="true">
+        <button class="nav-case-back" id="navCaseBack">&#8592; Index</button>
+        <span class="nav-case-divider" aria-hidden="true">/</span>
+        <button class="nav-case-about" id="navCaseAbout">About</button>
+        <span class="nav-case-divider" aria-hidden="true">/</span>
+        <button class="nav-case-next" id="navCaseNext">
+          Next
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 6h8M6 2l4 4-4 4"/>
+          </svg>
+        </button>
+      </div>
+
     </div>
   </div>
 </nav>
@@ -678,10 +680,11 @@ const pageView = document.getElementById("pageView");
 const aboutView = document.getElementById("aboutView");
 const cursor = document.getElementById("cursor");
 const scrollAffordance = document.getElementById("scrollAffordance");
-const stickyBack = document.getElementById("stickyBack");
-const stickyBackBtn = document.getElementById("stickyBackBtn");
-const stickyNextBtn = document.getElementById("stickyNextBtn");
-const stickyCaseTitle = document.getElementById("stickyCaseTitle");
+const navLinksIndex = document.getElementById("navLinksIndex");
+const navLinksCase = document.getElementById("navLinksCase");
+const navCaseBack = document.getElementById("navCaseBack");
+const navCaseAbout = document.getElementById("navCaseAbout");
+const navCaseNext = document.getElementById("navCaseNext");
 
 document.getElementById("totalIndexStr").textContent = String(projects.length).padStart(2, "0");
 
@@ -726,24 +729,29 @@ function hideAffordance() {
   scrollAffordance.classList.add("hidden");
 }
 
-/* ── STICKY BACK — scroll spy ── */
-let scrollSpyActive = false;
-function enableScrollSpy(title) {
-  scrollSpyActive = true;
-  stickyCaseTitle.textContent = title;
-  window.addEventListener("scroll", onCaseScroll, { passive: true });
+/* ── NAV MORPH: index ↔ case ── */
+function morphNavToCase(nextTitle) {
+  // Update the "Next" label before animating in
+  navCaseNext.innerHTML = `Next <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h8M6 2l4 4-4 4"/></svg>`;
+
+  navLinksCase.setAttribute("aria-hidden", "false");
+  gsap.timeline()
+    .to(navLinksIndex, { opacity: 0, y: -8, duration: 0.2, ease: "power2.in",
+      onComplete: () => { navLinksIndex.style.pointerEvents = "none"; } })
+    .set(navLinksCase, { opacity: 0, y: 8, pointerEvents: "all" })
+    .to(navLinksCase, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" });
 }
-function disableScrollSpy() {
-  scrollSpyActive = false;
-  window.removeEventListener("scroll", onCaseScroll);
-  stickyBack.classList.remove("visible");
-}
-function onCaseScroll() {
-  if (window.scrollY > 120) {
-    stickyBack.classList.add("visible");
-  } else {
-    stickyBack.classList.remove("visible");
-  }
+
+function morphNavToIndex() {
+  navLinksIndex.style.pointerEvents = "all";
+  gsap.timeline()
+    .to(navLinksCase, { opacity: 0, y: 8, duration: 0.2, ease: "power2.in",
+      onComplete: () => {
+        navLinksCase.style.pointerEvents = "none";
+        navLinksCase.setAttribute("aria-hidden", "true");
+      } })
+    .set(navLinksIndex, { opacity: 0, y: -8 })
+    .to(navLinksIndex, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" });
 }
 
 /* ── DOM GENERATORS ── */
@@ -876,18 +884,23 @@ function switchView(target) {
   updateNavStyles(target);
   hideAffordance();
 
+  // Morph the nav right-side links
+  if (target === 'project') {
+    morphNavToCase();
+  } else {
+    // Both 'index' and 'about' show the standard nav links
+    morphNavToIndex();
+  }
+
   const oldViewEl = getViewEl(currentView);
   const newViewEl = getViewEl(target);
 
-  // Determine transition direction feel
-  const goingDeeper = (currentView === 'index' && target === 'project');
   const goingBack = (target === 'index');
 
   const tl = gsap.timeline({
     onComplete: () => {
       gsap.set(oldViewEl, { visibility: "hidden", pointerEvents: "none" });
 
-      // Populate project view content
       if (target === 'project') {
         const p = projects[current];
         document.getElementById("caseOverline").textContent = `${p.client} — ${p.year}`;
@@ -895,20 +908,9 @@ function switchView(target) {
         document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
         document.getElementById("caseBodyContent").innerHTML = generateProjectHTML(current);
         bindCaseButtons();
-        enableScrollSpy(p.title);
-        stickyCaseTitle.textContent = p.title;
-        // Update sticky next btn
-        const nextIndex = (current + 1) % projects.length;
-        stickyNextBtn.textContent = '';
-        stickyNextBtn.innerHTML = `Next project <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2l5 5-5 5"/></svg>`;
-      }
-
-      if (target === 'about') {
-        disableScrollSpy();
       }
 
       if (target === 'index') {
-        disableScrollSpy();
         if (window.innerWidth <= 768) {
           const activeSlide = square.querySelector(".title-slide");
           if (activeSlide) gsap.set(square, { height: activeSlide.offsetHeight });
@@ -973,7 +975,6 @@ function navigateNextProject() {
     document.getElementById("caseTags").textContent = p.tags.join("  ·  ");
     document.getElementById("caseBodyContent").innerHTML = generateProjectHTML(current);
     bindCaseButtons();
-    stickyCaseTitle.textContent = p.title;
     window.scrollTo(0, 0);
   }, null, 0.25);
   tl.to(pageView, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.28);
@@ -1036,8 +1037,11 @@ document.getElementById("navAbout").addEventListener("click", (e) => { e.prevent
 document.getElementById("navIndex").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
 document.getElementById("brandLogo").addEventListener("click", (e) => { e.preventDefault(); switchView('index'); });
 document.getElementById("aboutBackBtn").addEventListener("click", () => switchView('index'));
-stickyBackBtn.addEventListener("click", () => switchView('index'));
-stickyNextBtn.addEventListener("click", () => navigateNextProject());
+
+// Morphed nav case buttons
+navCaseBack.addEventListener("click", () => switchView('index'));
+navCaseAbout.addEventListener("click", () => switchView('about'));
+navCaseNext.addEventListener("click", () => navigateNextProject());
 
 window.addEventListener("wheel", (e) => {
   if (animating || currentView !== 'index') return;
